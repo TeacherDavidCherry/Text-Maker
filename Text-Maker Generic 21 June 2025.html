@@ -1,0 +1,344 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Dynamic Input Width Based on Placeholder & Input</title>
+<style>
+  body {
+    font-family: sans-serif;
+    max-width: 95vw;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f9fbff;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+  h2 {
+    color: #333;
+    margin: 0 15px 0 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .builder-section {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  input[type="text"] {
+    font-size: 16px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: content-box;
+    min-width: 2ch;
+    max-width: 30ch;
+    width: auto;
+    transition: width 0.15s ease;
+    font-family: inherit;
+  }
+  #punctuation {
+    width: 4ch !important;
+    font-size: 24px;
+    text-align: center;
+    flex-grow: 0;
+    flex-shrink: 0;
+    box-sizing: content-box;
+  }
+  .plus {
+    font-weight: bold;
+    font-size: 20px;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  button {
+    padding: 8px 14px;
+    font-size: 16px;
+    border: none;
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 12px;
+    white-space: nowrap;
+  }
+  button:hover {
+    background-color: #357abd;
+  }
+  #builtAll {
+    margin-top: 8px;
+    font-size: 18px;
+    width: 100%;
+    height: 140px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #fff;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: inherit;
+    color: #222;
+    white-space: pre-wrap;
+  }
+  label[for="builtAll"] {
+    display: block;
+    font-weight: bold;
+    margin-top: 25px;
+    margin-bottom: 6px;
+    font-size: 20px;
+  }
+  #widthCalc {
+    position: absolute;
+    visibility: hidden;
+    white-space: nowrap;
+    font-size: 16px;
+    font-family: inherit;
+    padding: 6px 8px;
+    border: 1px solid transparent;
+    box-sizing: content-box;
+  }
+  .shirt-iep-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .shirt-iep-container input[type="text"] {
+    min-width: 5ch;
+    max-width: 15ch;
+  }
+  .shirt-iep-separator {
+    user-select: none;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  #sessionDate {
+    min-width: 7ch;
+    max-width: 12ch;
+  }
+  .lineBreakBtn {
+    background-color: #888;
+    margin-left: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+  }
+  .lineBreakBtn:hover {
+    background-color: #666;
+  }
+  #copyBtn {
+    margin-top: 12px;
+    background-color: #28a745;
+  }
+  #copyBtn:hover {
+    background-color: #1e7e34;
+  }
+</style>
+</head>
+<body>
+
+<div class="shirt-iep-container" aria-label="Shirt Number, IEP Group Number, and Date">
+  <input id="shirtNumber" type="text" placeholder="Shirt Number" aria-label="Shirt Number" />
+  <span class="shirt-iep-separator" aria-hidden="true">|</span>
+  <input id="iepGroupNumber" type="text" placeholder="IEP Group Number" aria-label="IEP Group Number" />
+  <span class="shirt-iep-separator" aria-hidden="true">|</span>
+  <input id="sessionDate" type="text" placeholder="date" aria-label="Date (optional)" />
+</div>
+
+<div class="builder-section" aria-label="Sentence builder">
+  <h2>Sentence:</h2>
+  <input id="adverb1" type="text" placeholder="adverb" aria-label="Adverb 1" />
+  <span class="plus" aria-hidden="true">+</span>
+  <input id="noun" type="text" placeholder="noun" aria-label="Noun" />
+  <span class="plus" aria-hidden="true">+</span>
+  <input id="negation" type="text" placeholder="negation" aria-label="Negation" />
+  <span class="plus" aria-hidden="true">+</span>
+  <input id="verb" type="text" placeholder="verb" aria-label="Verb" />
+  <span class="plus" aria-hidden="true">+</span>
+  <input id="adverb2" type="text" placeholder="adverb" aria-label="Adverb 2" />
+  <span class="plus" aria-hidden="true">+</span>
+  <input id="object" type="text" placeholder="object" aria-label="Object" />
+  <span class="plus" aria-hidden="true">+</span>
+  <input id="adverb3" type="text" placeholder="adverb" aria-label="Adverb 3" />
+  <span class="plus" aria-hidden="true">+</span>
+  <input id="punctuation" type="text" placeholder=".,!" maxlength="2" aria-label="Punctuation" />
+  <span class="plus" aria-hidden="true">+</span>
+  <input id="joiner" type="text" placeholder="joiner" aria-label="Joiner" />
+  <button id="buildBtn" title="Add on same line">Build on same line</button>
+  <button class="lineBreakBtn" title="Add on next line">Build on next line</button>
+</div>
+
+<div class="builder-section" aria-label="Yes/No question builder">
+  <h2>Yes/No Question:</h2>
+  <input id="auxVerb" type="text" placeholder="be/do/can/have" aria-label="Helping or Be verb" />
+  <input id="auxSubject" type="text" placeholder="subject" aria-label="Subject" />
+  <input id="auxAdverbBeforeVerb" type="text" placeholder="adverb" aria-label="Adverb before verb" />
+  <input id="auxVerb2" type="text" placeholder="verb" aria-label="Verb" />
+  <input id="auxObject" type="text" placeholder="object" aria-label="Object" />
+  <input id="auxSubjectComplement" type="text" placeholder="subject complement" aria-label="Subject complement" />
+  <input id="auxAdverb" type="text" placeholder="adverb" aria-label="Adverb" />
+  <input id="auxQM" type="text" placeholder="?" maxlength="1" aria-label="Question mark" style="width: 2ch; text-align:center;" />
+  <button id="buildYesNoQuestionBtn" title="Add Yes/No Question on same line">Build on same line</button>
+  <button class="lineBreakBtn" title="Add Yes/No Question on next line">Build on next line</button>
+</div>
+
+<div class="builder-section" aria-label="WH question builder">
+  <h2>WH- Question:</h2>
+  <input id="whWord" type="text" placeholder="who/what/where/when/why/how" aria-label="WH word" />
+  <input id="whAdverbBeforeVerb" type="text" placeholder="adverb" aria-label="Adverb before verb" />
+  <input id="whHelpingVerb" type="text" placeholder="am/is/are/do/can/have" aria-label="Helping or be verb" />
+  <input id="whSubject" type="text" placeholder="subject" aria-label="Subject" />
+  <input id="whVerb" type="text" placeholder="verb" aria-label="Verb" />
+  <input id="whObject" type="text" placeholder="object" aria-label="Object" />
+  <input id="whSubjectComplement" type="text" placeholder="subject complement" aria-label="Subject complement" />
+  <input id="whAdverb" type="text" placeholder="adverb" aria-label="Adverb" />
+  <input id="whQM" type="text" placeholder="?" maxlength="1" aria-label="Question mark" style="width: 2ch; text-align:center;" />
+  <button id="buildWhQuestionBtn" title="Add WH Question on same line">Build on same line</button>
+  <button class="lineBreakBtn" title="Add WH Question on next line">Build on next line</button>
+</div>
+
+<label for="builtAll">Rough Draft</label>
+<textarea id="builtAll" aria-label="Rough draft output"></textarea>
+<button id="copyBtn" title="Copy all text to clipboard">Copy</button>
+
+<span id="widthCalc"></span>
+
+<script>
+  function adjustWidth(el) {
+    const span = document.getElementById('widthCalc');
+    span.style.font = window.getComputedStyle(el).font;
+    span.textContent = el.value || el.placeholder || '';
+    let width = span.offsetWidth + 20;
+    if (width < 35) width = 35;
+    el.style.width = width + 'px';
+  }
+
+  document.querySelectorAll('input[type="text"]').forEach(input => {
+    adjustWidth(input);
+    input.addEventListener('input', () => adjustWidth(input));
+  });
+
+  function appendToBuiltAll(text, addLineBreak) {
+    const built = document.getElementById('builtAll');
+    if (built.value) {
+      if (built.value.endsWith('\n')) {
+        built.value += text;
+      } else {
+        built.value += addLineBreak ? '\n' + text : ' ' + text;
+      }
+    } else {
+      built.value = text;
+    }
+  }
+
+  function clearInputs(ids) {
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.value = '';
+        adjustWidth(el);
+      }
+    });
+  }
+
+  function getHeader() {
+    const shirt = document.getElementById('shirtNumber').value.trim();
+    const iep = document.getElementById('iepGroupNumber').value.trim();
+    const date = document.getElementById('sessionDate').value.trim();
+    let header = '';
+    if(shirt) header += 'Shirt number: ' + shirt;
+    if(iep) header += (header ? ' | ' : '') + 'IEP Group: ' + iep;
+    if(date) header += (header ? ' | ' : '') + 'Date: ' + date;
+    return header;
+  }
+
+  function buildSentence(addLineBreak) {
+    const parts = [
+      'adverb1','noun','negation','verb','adverb2','object','adverb3','punctuation','joiner'
+    ].map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    if(parts.length === 0) return;
+
+    let sentence = parts.join(' ');
+    const punctuationInput = document.getElementById('punctuation').value.trim();
+    if (punctuationInput) {
+      sentence = sentence.replace(/\s+([.,!?])$/, '$1');
+    }
+    sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
+    const header = getHeader();
+    const built = document.getElementById('builtAll');
+    if (!built.value && header) {
+      built.value = header + '\n';
+    }
+    appendToBuiltAll(sentence, addLineBreak);
+    clearInputs(['adverb1','noun','negation','verb','adverb2','object','adverb3','punctuation','joiner']);
+  }
+
+  function buildYesNoQuestion(addLineBreak) {
+    const ids = ['auxVerb','auxSubject','auxAdverbBeforeVerb','auxVerb2','auxObject','auxSubjectComplement','auxAdverb','auxQM'];
+    const vals = ids.map(id => document.getElementById(id).value.trim());
+    const parts = vals.slice(0, -1).filter(Boolean);
+    let question = parts.join(' ');
+    const qm = vals[vals.length - 1];
+    if(qm) question += qm;
+    question = question.charAt(0).toUpperCase() + question.slice(1);
+    if(question.trim() === '') return;
+    const header = getHeader();
+    const built = document.getElementById('builtAll');
+    if (!built.value && header) {
+      built.value = header + '\n';
+    }
+    appendToBuiltAll(question, addLineBreak);
+    clearInputs(ids);
+  }
+
+  function buildWhQuestion(addLineBreak) {
+    const ids = ['whWord','whAdverbBeforeVerb','whHelpingVerb','whSubject','whVerb','whObject','whSubjectComplement','whAdverb','whQM'];
+    const vals = ids.map(id => document.getElementById(id).value.trim());
+    const parts = vals.slice(0, -1).filter(Boolean);
+    let question = parts.join(' ');
+    const qm = vals[vals.length - 1];
+    if(qm) question += qm;
+    question = question.charAt(0).toUpperCase() + question.slice(1);
+    if(question.trim() === '') return;
+    const header = getHeader();
+    const built = document.getElementById('builtAll');
+    if (!built.value && header) {
+      built.value = header + '\n';
+    }
+    appendToBuiltAll(question, addLineBreak);
+    clearInputs(ids);
+  }
+
+  document.getElementById('buildBtn').addEventListener('click', () => buildSentence(false));
+  document.querySelectorAll('.builder-section:nth-child(2) .lineBreakBtn').forEach(btn => {
+    btn.addEventListener('click', () => buildSentence(true));
+  });
+
+  document.getElementById('buildYesNoQuestionBtn').addEventListener('click', () => buildYesNoQuestion(false));
+  document.querySelectorAll('.builder-section:nth-child(3) .lineBreakBtn').forEach(btn => {
+    btn.addEventListener('click', () => buildYesNoQuestion(true));
+  });
+
+  document.getElementById('buildWhQuestionBtn').addEventListener('click', () => buildWhQuestion(false));
+  document.querySelectorAll('.builder-section:nth-child(4) .lineBreakBtn').forEach(btn => {
+    btn.addEventListener('click', () => buildWhQuestion(true));
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const built = document.getElementById('builtAll');
+    if (!built.value.trim()) {
+      alert('Nothing to copy!');
+      return;
+    }
+    navigator.clipboard.writeText(built.value).then(() => {
+      alert('Copied to clipboard!');
+    }).catch(err => {
+      alert('Failed to copy: ' + err);
+    });
+  });
+</script>
+
+</body>
+</html>
