@@ -2,23 +2,70 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Send Comments</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Comment Receiver</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #005a9c;
+    }
+    #receivedComment {
+      white-space: pre-wrap; /* preserve new lines */
+      border: 2px solid #005a9c;
+      background-color: #e6f0fa;
+      padding: 20px;
+      border-radius: 8px;
+      min-height: 100px;
+      margin-top: 30px;
+      font-size: 1.1rem;
+    }
+    #noComment {
+      text-align: center;
+      color: #888;
+      margin-top: 30px;
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
-  <h2>Send Comments</h2>
-  <form id="commentForm">
-    <label for="comments">Enter your comments:</label><br />
-    <textarea id="comments" name="comments" rows="5" cols="40"></textarea><br /><br />
-    <button type="submit">Send to Receiver Page</button>
-  </form>
+
+  <h1>Received Comment</h1>
+
+  <div id="receivedComment" aria-live="polite"></div>
+  <div id="noComment" role="alert" style="display:none;">No comment received.</div>
 
   <script>
-    document.getElementById('commentForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const comments = encodeURIComponent(document.getElementById('comments').value);
-      // Redirect to receiver page with comments in URL
-      window.location.href = 'receiver.html?comments=' + comments;
+    // Function to safely get query parameter by name
+    function getQueryParam(param) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const commentParam = getQueryParam('comments');
+
+      if (commentParam) {
+        // Decode URI component and sanitize output to prevent XSS (basic approach)
+        const decodedComment = decodeURIComponent(commentParam);
+
+        // Display the comment
+        document.getElementById('receivedComment').textContent = decodedComment;
+        document.getElementById('noComment').style.display = 'none';
+      } else {
+        // Show the no comment message
+        document.getElementById('receivedComment').style.display = 'none';
+        document.getElementById('noComment').style.display = 'block';
+      }
     });
   </script>
+
 </body>
 </html>
