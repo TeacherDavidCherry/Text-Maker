@@ -2,70 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Comment Receiver</title>
+  <title>Receiver</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 0 20px;
-      background: #f9f9f9;
-      color: #333;
-    }
-    h1 {
-      text-align: center;
-      color: #005a9c;
-    }
-    #receivedComment {
-      white-space: pre-wrap; /* preserve new lines */
-      border: 2px solid #005a9c;
-      background-color: #e6f0fa;
-      padding: 20px;
-      border-radius: 8px;
-      min-height: 100px;
-      margin-top: 30px;
-      font-size: 1.1rem;
-    }
-    #noComment {
-      text-align: center;
-      color: #888;
-      margin-top: 30px;
-      font-style: italic;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #comment-display { margin: 20px 0; font-size: 1.2em; color: #333; }
+    button { margin-right: 10px; padding: 10px 15px; }
   </style>
 </head>
 <body>
-
   <h1>Received Comment</h1>
-
-  <div id="receivedComment" aria-live="polite"></div>
-  <div id="noComment" role="alert" style="display:none;">No comment received.</div>
+  <div id="comment-display">No comment received.</div>
+  <button id="reload-btn">Reload</button>
+  <button id="clear-btn">Clear</button>
 
   <script>
-    // Function to safely get query parameter by name
-    function getQueryParam(param) {
+    function getCommentFromURL() {
       const params = new URLSearchParams(window.location.search);
-      return params.get(param);
+      return params.get('comments');
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const commentParam = getQueryParam('comments');
-
-      if (commentParam) {
-        // Decode URI component and sanitize output to prevent XSS (basic approach)
-        const decodedComment = decodeURIComponent(commentParam);
-
-        // Display the comment
-        document.getElementById('receivedComment').textContent = decodedComment;
-        document.getElementById('noComment').style.display = 'none';
+    function displayComment(comment) {
+      const display = document.getElementById('comment-display');
+      if (comment) {
+        display.textContent = comment;
       } else {
-        // Show the no comment message
-        document.getElementById('receivedComment').style.display = 'none';
-        document.getElementById('noComment').style.display = 'block';
+        display.textContent = 'No comment received.';
       }
+    }
+
+    // Load comment on page load
+    const comment = getCommentFromURL();
+    displayComment(comment);
+
+    // Reload button reloads the page
+    document.getElementById('reload-btn').addEventListener('click', () => {
+      window.location.reload();
+    });
+
+    // Clear button removes the comment from display and URL
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      displayComment(null);
+      // Remove comments from URL without reloading
+      history.replaceState(null, '', window.location.pathname);
     });
   </script>
-
 </body>
 </html>
