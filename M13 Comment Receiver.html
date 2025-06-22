@@ -25,5 +25,23 @@
       document.getElementById('comment').value = decodeURIComponent(prefilledComment);
     }
   </script>
+  <script>
+  function loadCommentForPage(pageKey) {
+    const comment = localStorage.getItem('comment_' + pageKey);
+    if (comment) {
+      const commentBox = document.getElementById('comment');
+      if (commentBox) {
+        commentBox.value = comment;
+        // Optionally clear the stored comment so it only loads once
+        localStorage.removeItem('comment_' + pageKey);
+      }
+    }
+  }
+
+  window.onload = () => {
+    // Replace 'M11' with the correct key for this page, e.g., 'M12', 'M13', etc.
+    loadCommentForPage('M11');
+  };
+</script>
 </body>
 </html>
