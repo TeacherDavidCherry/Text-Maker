@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Dynamic Input Width Based on Placeholder & Input</title>
+<style>
+
+h1 {
+  font-size: 22px; /* or whatever size you want */
+  margin-bottom: 20px; /* optional spacing */
+}
+
+#buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+margin-bottom: 20px; /* Add this line */
+}
+
+button {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 12px;
+  border: 1px solid #888;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 50px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 800px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+pre {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+  body {
+    font-family: sans-serif;
+    max-width: 95vw;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f9fbff;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+  h2 {
+    color: #333;
+    margin: 0 15px 0 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .builder-section {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  input[type="text"] {
+    font-size: 16px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: content-box;
+    min-width: 2ch;
+    max-width: 30ch;
+    width: auto;
+    transition: width 0.15s ease;
+    font-family: inherit;
+    autocapitalize: off;
+  }
+  #punctuation {
+    width: 4ch !important;
+    font-size: 16px;
+    text-align: center;
+    flex-grow: 0;
+    flex-shrink: 0;
+    box-sizing: content-box;
+  }
+  .plus {
+    font-weight: normal;
+    font-size: 16px;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  button {
+    padding: 6px 10px;
+    font-size: 16px;
+    border: none;
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+  button:hover {
+    background-color: #357abd;
+  }
+  #builtAll {
+    font-size: 18px;
+    width: 50%;
+    min-width: 300px;
+    height: auto;
+    min-height: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    box-sizing: border-box;
+    resize: both;
+    font-family: inherit;
+    color: #222;
+    white-space: pre-wrap;
+    margin-top: 8px;
+    overflow: hidden; /* prevent scrollbars */
+  }
+  #widthCalc {
+    position: absolute;
+    visibility: hidden;
+    white-space: nowrap;
+    font-size: 16px;
+    font-family: inherit;
+    padding: 6px 8px;
+    border: 1px solid transparent;
+    box-sizing: content-box;
+  }
+  .shirt-iep-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .shirt-iep-container input[type="text"] {
+    min-width: 17ch;
+    max-width: 17ch;
+  }
+  .shirt-iep-separator {
+    user-select: none;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  #sessionDate {
+    min-width: 17ch;
+    max-width: 17ch;
+  }
+  .lineBreakBtn {
+    background-color: #4a90e2;
+    margin-left: 6px;
+    padding: 6px 10px;
+    font-size: 16px;
+    border-radius: 4px;
+  }
+  .lineBreakBtn:hover {
+    background-color: #666;
+  }
+  #copyBtn {
+    background-color: #4a90e2;
+    margin-left: 10px;
+    margin-top: 8px;
+  }
+  #copyBtn:hover {
+    background-color: #1e7e34;
+  }
+</style>
+</head>
+<body>
+
+<h1>Grammar Tips</h1>
+<div id="buttons"></div>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="modalTitle"></h2>
+    <pre id="modalText"></pre>
+  </div>
+</div>
+
+<div class="shirt-iep-container" aria-label="Shirt Number, IEP Group Number, and Date">
+  <input id="shirtNumber" type="text" placeholder="Shirt Number" aria-label="Shirt Number" autocapitalize="off" />
+  <input id="iepGroupNumber" type="text" placeholder="IEP Group Number" aria-label="IEP Group Number" autocapitalize="off" />
+  <input id="sessionDate" type="text" placeholder="Date" aria-label="Date (optional)" autocapitalize="off" />
+  <button id="buildHeaderBtn" title="Build Header">Build</button>
+</div>
+
+<div class="builder-section" aria-label="Sentence builder">
+  <h2>Sentence:</h2>
+  <input id="adverb1" type="text" placeholder="adverb" />
+  <input id="subject" type="text" placeholder="subject" />
+  <input id="negation" type="text" placeholder="negation" />
+  <input id="adverbBetweenNegVerb" type="text" placeholder="adverb" />
+  <input id="verb" type="text" placeholder="verb" />
+  <input id="adverb2" type="text" placeholder="adverb" />
+  <input id="object" type="text" placeholder="object" />
+  <input id="subjectComplement" type="text" placeholder="subject complement" />
+  <input id="adverb3" type="text" placeholder="adverb" />
+  <input id="punctuation" type="text" placeholder=".,!" maxlength="1" />
+  <input id="joiner" type="text" placeholder="joiner" />
+  <button id="buildBtn">Build on same line</button>
+  <button class="lineBreakBtn">Build on next line</button>
+</div>
+
+<div class="builder-section" aria-label="Yes/No question builder">
+  <h2>Yes/No Question:</h2>
+  <input id="auxVerb" type="text" placeholder="be/do/can/have" />
+  <input id="auxSubject" type="text" placeholder="subject" />
+  <input id="auxAdverbBeforeVerb" type="text" placeholder="adverb" />
+  <input id="auxVerb2" type="text" placeholder="verb" />
+  <input id="auxObject" type="text" placeholder="object" />
+  <input id="auxSubjectComplement" type="text" placeholder="subject complement" />
+  <input id="auxAdverb" type="text" placeholder="adverb" />
+  <input id="auxQM" type="text" placeholder="?" maxlength="1" style="width: 2ch; text-align:center;" />
+  <button id="buildYesNoQuestionBtn">Build on same line</button>
+  <button class="lineBreakBtn">Build on next line</button>
+</div>
+
+<div class="builder-section" aria-label="Wh question builder">
+  <h2>Wh- Question:</h2>
+  <input id="whWord" type="text" placeholder="who/what/where/when/why/how" />
+  <input id="whSubject" type="text" placeholder="subject" />
+  <input id="whAdverbBetweenSubjectVerb" type="text" placeholder="adverb" />
+  <input id="whVerb" type="text" placeholder="verb" />
+  <input id="whObject" type="text" placeholder="object" />
+  <input id="whSubjectComplement" type="text" placeholder="subject complement" />
+  <input id="whAdverb" type="text" placeholder="adverb" />
+  <input id="whQM" type="text" placeholder="?" maxlength="1" style="width: 2ch; text-align:center;" />
+  <button id="buildWhQuestionBtn">Build on same line</button>
+  <button class="lineBreakBtn">Build on next line</button>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
+  <h2>Rough Draft:</h2>
+  <textarea id="builtAll" aria-label="Rough draft output"></textarea>
+  <button id="copyBtn">Copy</button>
+</div>
+
+<span id="widthCalc" aria-hidden="true"></span>
+
+<script>
+  const tips = {
+    "Present Simple": `Present Simple (facts, habits, routines; things that are always true; or events that happen on a schedule or timetable)
+
+Q: Do + I/you/we/they + V1 + O | Does + he/she/it + V1 + O?
+Do I/you/we/they eat pizza?
+Does he/she/it eat pizza?
+
+Pos.: I/You/We/They + V1 + O | He/She/It + verb+s/es + O
+I/You/We/They eat pizza. | He/She/It eats pizza.
+
+Neg.: I/You/We/They + do not + V1 + O | He/She/It + does not + V1 + O
+I/You/We/They do not eat pizza.
+He/She/It does not eat pizza.
+
+Time Markers:
+always, usually, often, sometimes, never, every day/week, on Mondays/etc.`,
+
+    "Present Simple Linking Verbs": `Present Simple Linking Verbs (Verb "to be" for states, identity, characteristics)
+
+Q: Am/Are/Is + subject + SC…?
+Am I a pizza lover?
+Are you/we/they pizza lovers?
+Is he/she/it a pizza lover?
+
+Pos.: I am | You/We/They are | He/She/It is + SC
+I am a pizza lover.
+You/We/They are pizza lovers.
+He/She/It is a pizza lover.
+
+Neg.: I am not + SC | You/We/They are not + SC | He/She/It is not + SC
+I am not a pizza lover.
+You/We/They are not pizza lovers.
+He/She/It is not a pizza lover.`,
+
+    "Present Continuous": `Present Continuous (current time; things happening now)
+
+Q: Am/Are/Is + subject + verb+ing + O?
+Am I eating pizza?
+Are you/we/they eating pizza?
+Is he/she/it eating pizza?
+
+Pos.: I am + verb+ing + O | You/We/They are + verb+ing + O | He/She/It is + verb+ing + O
+I am eating pizza. | You/We/They are eating pizza. | He/She/It is eating pizza.
+
+Neg.: I am not + verb+ing + O | You/We/They are not + verb+ing + O | He/She/It is not + verb+ing + O
+I am not eating pizza. | You/We/They are not eating pizza. | He/She/It is not eating pizza.
+
+Time Markers:
+now, right now, at the moment, today, this week/month/year (if temporary), these days, currently`,
+
+    "Present Perfect": `Present Perfect (currently relevant big changes)
+
+Q: Have + I/you/we/they + V3 + O | Has + he/she/it + V3 + O?
+Have I/you/we/they eaten pizza?
+Has he/she/it eaten pizza?
+
+Pos.: I/You/We/They have + V3 + O | He/She/It has + V3 + O
+I/You/We/They have eaten pizza. | He/She/It has eaten pizza.
+
+Neg.: I/You/We/They have not + V3 + O | He/She/It has not + V3 + O
+I/You/We/They have not eaten pizza. | He/She/It has not eaten pizza.
+
+Time Markers:
+already, yet, just, ever, never, recently, lately, so far, until now`,
+
+    "Present Perfect Continuous": `Present Perfect Continuous (relevant actions started in the past)
+
+Q: Have + I/you/we/they + been + verb+ing + O | Has + he/she/it + been + verb+ing + O?
+Have I/you/we/they been eating pizza? | Has he/she/it been eating pizza?
+
+Pos.: I/You/We/They have been + verb+ing + O | He/She/It has been + verb+ing + O
+I/You/We/They have been eating pizza. | He/She/It has been eating pizza.
+
+Neg.: I/You/We/They have not been + verb+ing + O | He/She/It has not been + verb+ing + O
+I/You/We/They have not been eating pizza. | He/She/It has not been eating pizza.
+
+Time Markers:
+for, since, how long, lately, recently, all day/week/etc.`,
+
+    "Past Simple": `Past Simple (past facts, habits)
+
+Q: Did + I/you/we/they + V1 + O | Did + he/she/it + V1 + O?
+Did I/you/we/they eat pizza? | Did he/she/it eat pizza?
+
+Pos.: I/You/We/They + V2 + O | He/She/It + V2 + O
+I/You/We/They ate pizza. | He/She/It ate pizza.
+
+Neg.: I/You/We/They did not + V1 + O | He/She/It did not + V1 + O
+I/You/We/They did not eat pizza. | He/She/It did not eat pizza.
+
+Time Markers:
+yesterday, last night/week/etc., ago, in 1990, once, then, the other day`,
+
+    "Past Continuous": `Past Continuous (ongoing actions in the past)
+
+Q: Were + you/we/they + verb+ing + O? | Was + I/he/she/it + verb+ing + O?
+Was I/he/she/it eating pizza? | Were you/we/they eating pizza?
+
+Pos.: I/He/She/It was + verb+ing + O | You/We/They were + verb+ing + O
+I/He/She/It was eating pizza. | You/We/They were eating pizza.
+
+Neg.: I/He/She/It was not + verb+ing + O | You/We/They were not + verb+ing + O
+I/He/She/It was not eating pizza. | You/We/They were not eating pizza.
+
+Time Markers:
+while, when (interruption), at 5 o’clock yesterday, all day yesterday`,
+
+    "Past Perfect": `Past Perfect (for something that happened before another past action)
+
+Q: Had + I/you/we/they/he/she/it + V3 + O?
+Had I/you/we/they/he/she/it eaten pizza?
+
+Pos.: I/You/We/They/He/She/It had + V3 + O
+I/You/We/They/He/She/It had eaten pizza.
+
+Neg.: I/You/We/They/He/She/It had not + V3 + O
+I/You/We/They/He/She/It had not eaten pizza.
+
+Time Markers:
+before, after, by the time, already, just, until then, when`,
+
+    "Future Simple": `Future Simple using “will” (spontaneous decisions or future certainty)
+
+Q: Will + subject + V1?
+
+Pos.: I will eat pizza.
+
+Neg.: I will not eat pizza.
+
+Time Markers:
+tomorrow, next week/month/year, soon, later, eventually`,
+
+    "Going to Future": `"Going to" Future (plans, intentions)
+
+Q: Am + I + going to + V1 + O? | Are + you/we/they + going to + V1 + O? | Is + he/she/it + going to + V1 + O?
+Am I going to eat pizza?
+Are you/we/they going to eat pizza?
+Is he/she/it going to eat pizza?
+
+Pos.: I/You/We/They/He/She/It am/is/are going to + V1 + O
+I am going to eat pizza.
+You/We/They are going to eat pizza.
+He/She/It is going to eat pizza.
+
+Neg.: I/You/We/They/He/She/It am/is/are not going to + V1 + O
+I am not going to eat pizza.
+You/We/They are not going to eat pizza.
+He/She/It is not going to eat pizza.
+
+Time Markers:
+tomorrow, next week, later, in the future`,
+
+    "Modal Verbs": `Modal Verbs (will, can, must, should, may, might)
+
+Examples:
+Will I eat pizza? / I will eat pizza.
+Can I eat pizza? / I can eat pizza.
+Must I eat pizza? / I must eat pizza.
+Should I eat pizza? / I should eat pizza.
+May I eat pizza? / I may eat pizza.
+Might I eat pizza? / I might eat pizza.`,
+
+    "Semi-modal Verbs": `Semi-modal Verbs
+
+Have to
+Q: Do I have to eat pizza?
+Pos.: I have to eat pizza.
+Neg.: I do not have to eat pizza.
+
+Ought to
+Pos.: I ought to eat pizza.
+Neg.: I ought not to eat pizza.`,
+
+    "Conditionals": `Conditionals
+
+Zero Conditional (general truth)
+If + I/you/we/they/he/she/it + present simple, I/you/we/they/he/she/it + present simple.
+If I eat pizza, I am happy.
+If he/she/it eats pizza, he/she/it is happy.
+
+First Conditional (real future)
+If + I/you/we/they/he/she/it + present simple, I/you/we/they/he/she/it + will + V1.
+If I eat pizza, I will be happy.
+
+
+First Conditional Negative
+If + I/you/we/they/he/she/it + do/does not + V1, I/you/we/they/he/she/it + will not + V1.
+If he does not eat pizza, he will not be happy.
+
+Second Conditional (unreal present/future)
+If + I/you/we/they/he/she/it + past simple, I/you/we/they/he/she/it + would + V1.
+If I ate pizza, I would be happy.
+
+Third Conditional (unreal past)
+If + I/you/we/they/he/she/it + had + V3, I/you/we/they/he/she/it + would have + V3.
+If I had eaten pizza, I would have been happy.`,
+
+    "Passive Voice": `Passive Voice
+
+Form: was/were + V3 + (by agent)
+
+Q: Was + I/he/she/it + V3 + by + agent? | Were + you/we/they + V3 + by + agent?
+
+Pos.: I/He/She/It was + V3 + by + agent. | You/We/They + were + V3 + by + agent. 
+
+Neg.: I/He/She/It was + not + V3 + by + agent. |You/We/They were + not + V3 + by + agent.`,
+
+    "Wh- Questions": `Wh- Questions
+
+Q: What, Where, When, Why, Who, How + do + I/you/we/they + V1 + O? | What, Where, When, Why, Who, How + does + he/she/it + V1 + O?
+Q: What, Where, When, Why, Who, How + did + I/you/he/she/it/we/you/they + V1 + O?
+What do I/you/we/they eat for lunch? | What does he/she/it eat for lunch?
+Where did I/you/we/they/he/she/it eat yesterday?
+When will I/you/we/they/he/she/it eat tomorrow?
+Why do I/you/we/they eat pizza? | Why does he/she/it eat pizza?
+Who ate pizza yesterday?
+How do I/you/we/they eat pizza? | How does he/she/it eat pizza?
+
+Note: When the Wh-word is the subject, do not use do/does/did.`
+  };
+
+  const buttonsDiv = document.getElementById("buttons");
+  const modal = document.getElementById("modal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText = document.getElementById("modalText");
+
+  for (const [title, content] of Object.entries(tips)) {
+    const btn = document.createElement("button");
+    btn.textContent = title;
+    btn.onclick = () => openModal(title, content);
+    buttonsDiv.appendChild(btn);
+  }
+
+  function openModal(title, content) {
+    modalTitle.textContent = title;
+
+    const formattedContent = content
+      .replace(/(^|\n)(Time Markers:)/g, "$1<strong>Time Markers:</strong>")
+      .replace(/\n/g, "<br>");
+
+    modalText.innerHTML = formattedContent;
+    modal.style.display = "block";
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  window.onclick = function (event) {
+    if (event.target === modal) {
+      closeModal();
+    }
+  };
+</script>
+
+
+<script>
+  let headerBuilt = false;
+
+  function adjustWidth(el) {
+    const span = document.getElementById('widthCalc');
+    span.style.font = window.getComputedStyle(el).font;
+    span.textContent = el.value || el.placeholder || '';
+    let width = span.offsetWidth + 20;
+    if (width < 35) width = 35;
+    el.style.width = width + 'px';
+  }
+
+  function autoResizeTextarea() { // <-- NEW
+    const textarea = document.getElementById('builtAll');
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+
+  function clearInputs(ids) {
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.value = '';
+        adjustWidth(el);
+      }
+    });
+  }
+
+  function joinParts(parts) {
+    if (parts.length === 0) return '';
+    let result = parts[0];
+    for (let i = 1; i < parts.length; i++) {
+      if (/^[.,!?]$/.test(parts[i])) {
+        result += parts[i];
+      } else {
+        result += ' ' + parts[i];
+      }
+    }
+    return result;
+  }
+
+  document.querySelectorAll('input[type="text"]').forEach(input => {
+    adjustWidth(input);
+    input.addEventListener('input', () => adjustWidth(input));
+  });
+
+  function appendToBuiltAll(text, addLineBreak) { // <-- CHANGED
+    const built = document.getElementById('builtAll');
+    if (built.value) {
+      built.value += addLineBreak ? '\n' + text : (built.value.endsWith('\n') ? text : ' ' + text);
+    } else {
+      built.value = text;
+    }
+    autoResizeTextarea(); // <-- NEW
+  }
+
+  document.getElementById('buildHeaderBtn').addEventListener('click', () => {
+    if (headerBuilt) return;
+    const shirt = document.getElementById('shirtNumber').value.trim();
+    const iep = document.getElementById('iepGroupNumber').value.trim();
+    const date = document.getElementById('sessionDate').value.trim();
+    const headerParts = [shirt, iep, date].filter(Boolean);
+    if (headerParts.length > 0) {
+      const headerStr = headerParts.join(' | ');
+      const built = document.getElementById('builtAll');
+      built.value += (built.value ? '\n\n' : '') + headerStr + '\n\n';
+      headerBuilt = true;
+      document.getElementById('buildHeaderBtn').disabled = true;
+      autoResizeTextarea(); // <-- NEW
+    }
+  });
+
+  document.getElementById('buildBtn').addEventListener('click', () => {
+    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), false);
+    clearInputs(inputs);
+  });
+
+  document.querySelectorAll('.builder-section')[0].querySelector('.lineBreakBtn').addEventListener('click', () => {
+    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), true);
+    clearInputs(inputs);
+  });
+
+  function buildYesNoQuestion(addLineBreak) {
+    const inputs = ['auxVerb', 'auxSubject', 'auxAdverbBeforeVerb', 'auxVerb2', 'auxObject', 'auxSubjectComplement', 'auxAdverb', 'auxQM'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), addLineBreak);
+    clearInputs(inputs);
+  }
+
+  document.getElementById('buildYesNoQuestionBtn').addEventListener('click', () => buildYesNoQuestion(false));
+  document.querySelectorAll('.builder-section')[1].querySelector('.lineBreakBtn').addEventListener('click', () => buildYesNoQuestion(true));
+
+  function buildWhQuestion(addLineBreak) {
+    const inputs = ['whWord', 'whSubject', 'whAdverbBetweenSubjectVerb', 'whVerb', 'whObject', 'whSubjectComplement', 'whAdverb', 'whQM'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), addLineBreak);
+    clearInputs(inputs);
+  }
+
+  document.getElementById('buildWhQuestionBtn').addEventListener('click', () => buildWhQuestion(false));
+  document.querySelectorAll('.builder-section')[2].querySelector('.lineBreakBtn').addEventListener('click', () => buildWhQuestion(true));
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const textArea = document.getElementById('builtAll');
+    textArea.select();
+    textArea.setSelectionRange(0, 99999);
+    try {
+      document.execCommand('copy');
+      alert('Copied to clipboard!');
+    } catch (err) {
+      alert('Copy failed. Please copy manually.');
+    }
+    window.getSelection().removeAllRanges();
+  });
+
+  autoResizeTextarea(); // <-- NEW
+</script>
+
+</body>
+</html>
