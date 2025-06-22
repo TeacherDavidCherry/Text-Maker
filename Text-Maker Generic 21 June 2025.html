@@ -84,6 +84,7 @@
     color: #222;
     white-space: pre-wrap;
     margin-top: 8px;
+    overflow: hidden; /* prevent scrollbars */
   }
   #widthCalc {
     position: absolute;
@@ -145,53 +146,53 @@
 
 <div class="builder-section" aria-label="Sentence builder">
   <h2>Sentence:</h2>
-  <input id="adverb1" type="text" placeholder="adverb" aria-label="Adverb 1" autocapitalize="off" />
-  <input id="noun" type="text" placeholder="noun" aria-label="Noun" autocapitalize="off" />
-  <input id="negation" type="text" placeholder="negation" aria-label="Negation" autocapitalize="off" />
-  <input id="verb" type="text" placeholder="verb" aria-label="Verb" autocapitalize="off" />
-  <input id="adverb2" type="text" placeholder="adverb" aria-label="Adverb 2" autocapitalize="off" />
-  <input id="object" type="text" placeholder="object" aria-label="Object" autocapitalize="off" />
-  <input id="subjectComplement" type="text" placeholder="subject complement" aria-label="Subject Complement" autocapitalize="off" />
-  <input id="adverb3" type="text" placeholder="adverb" aria-label="Adverb 3" autocapitalize="off" />
-  <input id="punctuation" type="text" placeholder=".,!" maxlength="1" aria-label="Punctuation" autocapitalize="off" />
-  <input id="joiner" type="text" placeholder="joiner" aria-label="Joiner" autocapitalize="off" />
-  <button id="buildBtn" title="Add on same line">Build on same line</button>
-  <button class="lineBreakBtn" title="Add on next line">Build on next line</button>
+  <input id="adverb1" type="text" placeholder="adverb" />
+  <input id="noun" type="text" placeholder="noun" />
+  <input id="negation" type="text" placeholder="negation" />
+  <input id="adverbBetweenNegVerb" type="text" placeholder="adverb" />
+  <input id="verb" type="text" placeholder="verb" />
+  <input id="adverb2" type="text" placeholder="adverb" />
+  <input id="object" type="text" placeholder="object" />
+  <input id="subjectComplement" type="text" placeholder="subject complement" />
+  <input id="adverb3" type="text" placeholder="adverb" />
+  <input id="punctuation" type="text" placeholder=".,!" maxlength="1" />
+  <input id="joiner" type="text" placeholder="joiner" />
+  <button id="buildBtn">Build on same line</button>
+  <button class="lineBreakBtn">Build on next line</button>
 </div>
 
 <div class="builder-section" aria-label="Yes/No question builder">
   <h2>Yes/No Question:</h2>
-  <input id="auxVerb" type="text" placeholder="be/do/can/have" aria-label="Helping or Be verb" autocapitalize="off" />
-  <input id="auxSubject" type="text" placeholder="subject" aria-label="Subject" autocapitalize="off" />
-  <input id="auxAdverbBeforeVerb" type="text" placeholder="adverb" aria-label="Adverb before verb" autocapitalize="off" />
-  <input id="auxVerb2" type="text" placeholder="verb" aria-label="Verb" autocapitalize="off" />
-  <input id="auxObject" type="text" placeholder="object" aria-label="Object" autocapitalize="off" />
-  <input id="auxSubjectComplement" type="text" placeholder="subject complement" aria-label="Subject complement" autocapitalize="off" />
-  <input id="auxAdverb" type="text" placeholder="adverb" aria-label="Adverb" autocapitalize="off" />
-  <input id="auxQM" type="text" placeholder="?" maxlength="1" aria-label="Question mark" style="width: 2ch; text-align:center;" autocapitalize="off" />
-  <button id="buildYesNoQuestionBtn" title="Add Yes/No Question on same line">Build on same line</button>
-  <button class="lineBreakBtn" title="Add Yes/No Question on next line">Build on next line</button>
+  <input id="auxVerb" type="text" placeholder="be/do/can/have" />
+  <input id="auxSubject" type="text" placeholder="subject" />
+  <input id="auxAdverbBeforeVerb" type="text" placeholder="adverb" />
+  <input id="auxVerb2" type="text" placeholder="verb" />
+  <input id="auxObject" type="text" placeholder="object" />
+  <input id="auxSubjectComplement" type="text" placeholder="subject complement" />
+  <input id="auxAdverb" type="text" placeholder="adverb" />
+  <input id="auxQM" type="text" placeholder="?" maxlength="1" style="width: 2ch; text-align:center;" />
+  <button id="buildYesNoQuestionBtn">Build on same line</button>
+  <button class="lineBreakBtn">Build on next line</button>
 </div>
 
 <div class="builder-section" aria-label="WH question builder">
   <h2>WH- Question:</h2>
-  <input id="whWord" type="text" placeholder="who/what/where/when/why/how" aria-label="WH word" autocapitalize="off" />
-  <input id="whAdverbBeforeVerb" type="text" placeholder="adverb" aria-label="Adverb before verb" autocapitalize="off" />
-  <input id="whHelpingVerb" type="text" placeholder="am/is/are/do/can/have" aria-label="Helping or be verb" autocapitalize="off" />
-  <input id="whSubject" type="text" placeholder="subject" aria-label="Subject" autocapitalize="off" />
-  <input id="whVerb" type="text" placeholder="verb" aria-label="Verb" autocapitalize="off" />
-  <input id="whObject" type="text" placeholder="object" aria-label="Object" autocapitalize="off" />
-  <input id="whSubjectComplement" type="text" placeholder="subject complement" aria-label="Subject complement" autocapitalize="off" />
-  <input id="whAdverb" type="text" placeholder="adverb" aria-label="Adverb" autocapitalize="off" />
-  <input id="whQM" type="text" placeholder="?" maxlength="1" aria-label="Question mark" style="width: 2ch; text-align:center;" autocapitalize="off" />
-  <button id="buildWhQuestionBtn" title="Add WH Question on same line">Build on same line</button>
-  <button class="lineBreakBtn" title="Add WH Question on next line">Build on next line</button>
+  <input id="whWord" type="text" placeholder="who/what/where/when/why/how" />
+  <input id="whSubject" type="text" placeholder="subject" />
+  <input id="whAdverbBetweenSubjectVerb" type="text" placeholder="adverb" />
+  <input id="whVerb" type="text" placeholder="verb" />
+  <input id="whObject" type="text" placeholder="object" />
+  <input id="whSubjectComplement" type="text" placeholder="subject complement" />
+  <input id="whAdverb" type="text" placeholder="adverb" />
+  <input id="whQM" type="text" placeholder="?" maxlength="1" style="width: 2ch; text-align:center;" />
+  <button id="buildWhQuestionBtn">Build on same line</button>
+  <button class="lineBreakBtn">Build on next line</button>
 </div>
 
 <div style="display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
   <h2>Rough Draft:</h2>
   <textarea id="builtAll" aria-label="Rough draft output"></textarea>
-  <button id="copyBtn" title="Copy rough draft">Copy</button>
+  <button id="copyBtn">Copy</button>
 </div>
 
 <span id="widthCalc" aria-hidden="true"></span>
@@ -206,6 +207,12 @@
     let width = span.offsetWidth + 20;
     if (width < 35) width = 35;
     el.style.width = width + 'px';
+  }
+
+  function autoResizeTextarea() { // <-- NEW
+    const textarea = document.getElementById('builtAll');
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
   }
 
   function clearInputs(ids) {
@@ -236,127 +243,82 @@
     input.addEventListener('input', () => adjustWidth(input));
   });
 
-  // UPDATED appendToBuiltAll function only
-  function appendToBuiltAll(text, addLineBreak) {
+  function appendToBuiltAll(text, addLineBreak) { // <-- CHANGED
     const built = document.getElementById('builtAll');
     if (built.value) {
-      if (addLineBreak) {
-        built.value += '\n' + text;
-      } else {
-        const lastChar = built.value[built.value.length - 1];
-        if (lastChar === '\n') {
-          built.value += text;
-        } else {
-          built.value += ' ' + text;
-        }
-      }
+      built.value += addLineBreak ? '\n' + text : (built.value.endsWith('\n') ? text : ' ' + text);
     } else {
       built.value = text;
     }
+    autoResizeTextarea(); // <-- NEW
   }
 
   document.getElementById('buildHeaderBtn').addEventListener('click', () => {
-    if (headerBuilt) return; // Only build header once
+    if (headerBuilt) return;
     const shirt = document.getElementById('shirtNumber').value.trim();
     const iep = document.getElementById('iepGroupNumber').value.trim();
     const date = document.getElementById('sessionDate').value.trim();
-
-    let headerParts = [];
-    if (shirt) headerParts.push(shirt);
-    if (iep) headerParts.push(iep);
-    if (date) headerParts.push(date);
-
+    const headerParts = [shirt, iep, date].filter(Boolean);
     if (headerParts.length > 0) {
       const headerStr = headerParts.join(' | ');
       const built = document.getElementById('builtAll');
-      if (built.value) {
-        // Add two line breaks before and after the header line for blank line spacing
-        built.value += '\n\n' + headerStr + '\n\n';
-      } else {
-        built.value = headerStr + '\n\n';
-      }
+      built.value += (built.value ? '\n\n' : '') + headerStr + '\n\n';
       headerBuilt = true;
       document.getElementById('buildHeaderBtn').disabled = true;
+      autoResizeTextarea(); // <-- NEW
     }
   });
 
   document.getElementById('buildBtn').addEventListener('click', () => {
-    const inputs = [
-      'adverb1', 'noun', 'negation', 'verb',
-      'adverb2', 'object', 'subjectComplement', 'adverb3',
-      'punctuation', 'joiner'
-    ];
-    let parts = inputs.map(id => document.getElementById(id).value.trim()).filter(v => v.length > 0);
-    if (parts.length === 0) return;
-    const sentence = joinParts(parts);
-    appendToBuiltAll(sentence, false);
+    const inputs = ['adverb1', 'noun', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), false);
     clearInputs(inputs);
   });
 
-  document.querySelectorAll('.lineBreakBtn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      let section = btn.closest('.builder-section');
-      if (!section) return;
-      let inputs = [];
-
-      if (section.querySelector('h2').textContent.startsWith('Sentence')) {
-        inputs = [
-          'adverb1', 'noun', 'negation', 'verb',
-          'adverb2', 'object', 'subjectComplement', 'adverb3',
-          'punctuation', 'joiner'
-        ];
-      } else if (section.querySelector('h2').textContent.startsWith('Yes/No')) {
-        inputs = [
-          'auxVerb', 'auxSubject', 'auxAdverbBeforeVerb', 'auxVerb2',
-          'auxObject', 'auxSubjectComplement', 'auxAdverb', 'auxQM'
-        ];
-      } else if (section.querySelector('h2').textContent.startsWith('WH-')) {
-        inputs = [
-          'whWord', 'whAdverbBeforeVerb', 'whHelpingVerb', 'whSubject',
-          'whVerb', 'whObject', 'whSubjectComplement', 'whAdverb', 'whQM'
-        ];
-      }
-
-      let parts = inputs.map(id => document.getElementById(id).value.trim()).filter(v => v.length > 0);
-      if (parts.length === 0) return;
-      const sentence = joinParts(parts);
-
-      appendToBuiltAll(sentence, true);
-      clearInputs(inputs);
-    });
-  });
-
-  document.getElementById('buildYesNoQuestionBtn').addEventListener('click', () => {
-    const inputs = [
-      'auxVerb', 'auxSubject', 'auxAdverbBeforeVerb', 'auxVerb2',
-      'auxObject', 'auxSubjectComplement', 'auxAdverb', 'auxQM'
-    ];
-    let parts = inputs.map(id => document.getElementById(id).value.trim()).filter(v => v.length > 0);
-    if (parts.length === 0) return;
-    const sentence = joinParts(parts);
-    appendToBuiltAll(sentence, false);
+  document.querySelectorAll('.builder-section')[0].querySelector('.lineBreakBtn').addEventListener('click', () => {
+    const inputs = ['adverb1', 'noun', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), true);
     clearInputs(inputs);
   });
 
-  document.getElementById('buildWhQuestionBtn').addEventListener('click', () => {
-    const inputs = [
-      'whWord', 'whAdverbBeforeVerb', 'whHelpingVerb', 'whSubject',
-      'whVerb', 'whObject', 'whSubjectComplement', 'whAdverb', 'whQM'
-    ];
-    let parts = inputs.map(id => document.getElementById(id).value.trim()).filter(v => v.length > 0);
-    if (parts.length === 0) return;
-    const sentence = joinParts(parts);
-    appendToBuiltAll(sentence, false);
+  function buildYesNoQuestion(addLineBreak) {
+    const inputs = ['auxVerb', 'auxSubject', 'auxAdverbBeforeVerb', 'auxVerb2', 'auxObject', 'auxSubjectComplement', 'auxAdverb', 'auxQM'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), addLineBreak);
     clearInputs(inputs);
-  });
+  }
+
+  document.getElementById('buildYesNoQuestionBtn').addEventListener('click', () => buildYesNoQuestion(false));
+  document.querySelectorAll('.builder-section')[1].querySelector('.lineBreakBtn').addEventListener('click', () => buildYesNoQuestion(true));
+
+  function buildWhQuestion(addLineBreak) {
+    const inputs = ['whWord', 'whSubject', 'whAdverbBetweenSubjectVerb', 'whVerb', 'whObject', 'whSubjectComplement', 'whAdverb', 'whQM'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), addLineBreak);
+    clearInputs(inputs);
+  }
+
+  document.getElementById('buildWhQuestionBtn').addEventListener('click', () => buildWhQuestion(false));
+  document.querySelectorAll('.builder-section')[2].querySelector('.lineBreakBtn').addEventListener('click', () => buildWhQuestion(true));
 
   document.getElementById('copyBtn').addEventListener('click', () => {
-    const built = document.getElementById('builtAll');
-    built.select();
-    document.execCommand('copy');
-    alert('Copied to clipboard!');
+    const textArea = document.getElementById('builtAll');
+    textArea.select();
+    textArea.setSelectionRange(0, 99999);
+    try {
+      document.execCommand('copy');
+      alert('Copied to clipboard!');
+    } catch (err) {
+      alert('Copy failed. Please copy manually.');
+    }
+    window.getSelection().removeAllRanges();
   });
+
+  autoResizeTextarea(); // <-- NEW
 </script>
 
 </body>
 </html>
+
