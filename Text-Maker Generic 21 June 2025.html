@@ -4,6 +4,81 @@
 <meta charset="UTF-8" />
 <title>Dynamic Input Width Based on Placeholder & Input</title>
 <style>
+
+h1 {
+  font-size: 22px; /* or whatever size you want */
+  margin-bottom: 20px; /* optional spacing */
+}
+
+#buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+margin-bottom: 20px; /* Add this line */
+}
+
+button {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 12px;
+  border: 1px solid #888;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 50px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 800px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+pre {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: inherit;
+}
+
   body {
     font-family: sans-serif;
     max-width: 95vw;
@@ -41,15 +116,15 @@
   }
   #punctuation {
     width: 4ch !important;
-    font-size: 24px;
+    font-size: 16px;
     text-align: center;
     flex-grow: 0;
     flex-shrink: 0;
     box-sizing: content-box;
   }
   .plus {
-    font-weight: bold;
-    font-size: 20px;
+    font-weight: normal;
+    font-size: 16px;
     user-select: none;
     flex-shrink: 0;
   }
@@ -75,7 +150,7 @@
     height: auto;
     min-height: 20px;
     padding: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     border-radius: 5px;
     background: #fff;
     box-sizing: border-box;
@@ -137,6 +212,17 @@
 </head>
 <body>
 
+<h1>Grammar Tips</h1>
+<div id="buttons"></div>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="modalTitle"></h2>
+    <pre id="modalText"></pre>
+  </div>
+</div>
+
 <div class="shirt-iep-container" aria-label="Shirt Number, IEP Group Number, and Date">
   <input id="shirtNumber" type="text" placeholder="Shirt Number" aria-label="Shirt Number" autocapitalize="off" />
   <input id="iepGroupNumber" type="text" placeholder="IEP Group Number" aria-label="IEP Group Number" autocapitalize="off" />
@@ -147,7 +233,7 @@
 <div class="builder-section" aria-label="Sentence builder">
   <h2>Sentence:</h2>
   <input id="adverb1" type="text" placeholder="adverb" />
-  <input id="noun" type="text" placeholder="noun" />
+  <input id="subject" type="text" placeholder="subject" />
   <input id="negation" type="text" placeholder="negation" />
   <input id="adverbBetweenNegVerb" type="text" placeholder="adverb" />
   <input id="verb" type="text" placeholder="verb" />
@@ -175,8 +261,8 @@
   <button class="lineBreakBtn">Build on next line</button>
 </div>
 
-<div class="builder-section" aria-label="WH question builder">
-  <h2>WH- Question:</h2>
+<div class="builder-section" aria-label="Wh question builder">
+  <h2>Wh- Question:</h2>
   <input id="whWord" type="text" placeholder="who/what/where/when/why/how" />
   <input id="whSubject" type="text" placeholder="subject" />
   <input id="whAdverbBetweenSubjectVerb" type="text" placeholder="adverb" />
@@ -196,6 +282,207 @@
 </div>
 
 <span id="widthCalc" aria-hidden="true"></span>
+
+<script>
+  const tips = {
+    "Present Simple": `Present Simple (facts, habits, routines; things that are always true; or events that happen on a schedule or timetable)
+
+Q: Do + I/you/we/they + V1 + O | Does + he/she/it + V1 + O?
+Do I/you/we/they eat pizza?
+Does he/she/it eat pizza?
+
+Pos.: I/You/We/They + V1 + O | He/She/It + verb+s/es + O
+I/You/We/They eat pizza. | He/She/It eats pizza.
+
+Neg.: I/You/We/They + do not + V1 + O | He/She/It + does not + V1 + O
+I/You/We/They do not eat pizza.
+He/She/It does not eat pizza.
+
+Time Markers:
+always, usually, often, sometimes, never, every day/week, on Mondays/etc.`,
+
+    "Present Simple Linking Verbs": `Present Simple Linking Verbs (Verb "to be" for states, identity, characteristics)
+
+Q: Am/Are/Is + subject + SC…?
+Am I a pizza lover?
+Are you/we/they pizza lovers?
+Is he/she/it a pizza lover?
+
+Pos.: I am | You/We/They are | He/She/It is + SC
+I am a pizza lover.
+You/We/They are pizza lovers.
+He/She/It is a pizza lover.
+
+Neg.: I am not + SC | You/We/They are not + SC | He/She/It is not + SC`,
+
+    "Present Continuous": `Present Continuous (current time; things happening now)
+
+Q: Am/Are/Is + subject + verb+ing + O?
+
+Pos.: I am eating pizza. / You are eating pizza. / He is eating pizza.
+
+Neg.: I am not eating pizza. / You are not eating pizza. / He is not eating pizza.
+
+Time Markers:
+now, right now, at the moment, today, this week/month/year (if temporary), these days, currently`,
+
+    "Present Perfect": `Present Perfect (currently relevant big changes)
+
+Q: Have + I/you/we/they + V3 + O | Has + he/she/it + V3 + O?
+
+Pos.: I have eaten pizza. / She has eaten pizza.
+
+Neg.: I have not eaten pizza. / He has not eaten pizza.
+
+Time Markers:
+already, yet, just, ever, never, recently, lately, so far, until now`,
+
+    "Present Perfect Continuous": `Present Perfect Continuous (relevant actions started in the past)
+
+Q: Have/Has + subject + been + verb+ing?
+
+Pos.: I have been eating pizza. / He has been eating pizza.
+
+Neg.: I have not been eating pizza. / She has not been eating pizza.
+
+Time Markers:
+for, since, how long, lately, recently, all day/week/etc.`,
+
+    "Past Simple": `Past Simple (past facts, habits)
+
+Q: Did + subject + V1?
+
+Pos.: I ate pizza. / They watched a movie.
+
+Neg.: I did not eat pizza. / They did not watch a movie.
+
+Time Markers:
+yesterday, last night/week/etc., ago, in 1990, once, then, the other day`,
+
+    "Past Continuous": `Past Continuous (ongoing actions in the past)
+
+Q: Was/Were + subject + verb+ing?
+
+Pos.: I was eating pizza. / They were playing.
+
+Neg.: I was not eating pizza. / They were not playing.
+
+Time Markers:
+while, when (interruption), at 5 o’clock yesterday, all day yesterday`,
+
+    "Past Perfect": `Past Perfect (for something that happened before another past action)
+
+Q: Had + subject + V3?
+
+Pos.: I had eaten pizza before you arrived.
+
+Neg.: I had not eaten pizza before you arrived.
+
+Time Markers:
+before, after, by the time, already, just, until then, when`,
+
+    "Future Simple": `Future Simple using “will” (spontaneous decisions or future certainty)
+
+Q: Will + subject + V1?
+
+Pos.: I will eat pizza.
+
+Neg.: I will not eat pizza.
+
+Time Markers:
+tomorrow, next week/month/year, soon, later, eventually`,
+
+    "Going to Future": `"Going to" Future (plans, intentions)
+
+Q: Am/Is/Are + subject + going to + V1?
+
+Pos.: I am going to eat pizza.
+
+Neg.: I am not going to eat pizza.
+
+Time Markers:
+tomorrow, next week, later, in the future`,
+
+    "Modal Verbs": `Modal Verbs (will, can, must, should, may, might)
+
+Examples:
+Will I eat pizza? / I will eat pizza.
+Can I eat pizza? / I can eat pizza.
+Must I eat pizza? / I must eat pizza.
+Should I eat pizza? / I should eat pizza.
+May I eat pizza? / I may eat pizza.
+Might I eat pizza? / I might eat pizza.`,
+
+    "Semi-modal Verbs": `Semi-modal Verbs
+
+Have to
+Q: Do I have to eat pizza?
+Pos.: I have to eat pizza.
+Neg.: I do not have to eat pizza.
+
+Ought to
+Pos.: I ought to eat pizza.
+Neg.: I ought not to eat pizza.`,
+
+    "Conditionals": `Conditionals
+
+Zero: If I eat pizza, I am happy.
+First: If I eat pizza, I will be happy.
+Second: If I ate pizza, I would be happy.
+Third: If I had eaten pizza, I would have been happy.`,
+
+    "Passive Voice": `Passive Voice
+
+Form: was/were + V3 + (by agent)
+
+Examples:
+It was eaten by me.
+They were eaten by us.`,
+
+    "Wh- Questions": `Wh- Questions
+
+What do you eat?
+Why did he eat pizza?
+Who eats pizza?
+How does she eat pizza?
+
+Note: When the Wh-word is the subject, do not use do/does/did.`
+  };
+
+  const buttonsDiv = document.getElementById("buttons");
+  const modal = document.getElementById("modal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText = document.getElementById("modalText");
+
+  for (const [title, content] of Object.entries(tips)) {
+    const btn = document.createElement("button");
+    btn.textContent = title;
+    btn.onclick = () => openModal(title, content);
+    buttonsDiv.appendChild(btn);
+  }
+
+  function openModal(title, content) {
+    modalTitle.textContent = title;
+
+    const formattedContent = content
+      .replace(/(^|\n)(Time Markers:)/g, "$1<strong>Time Markers:</strong>")
+      .replace(/\n/g, "<br>");
+
+    modalText.innerHTML = formattedContent;
+    modal.style.display = "block";
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  window.onclick = function (event) {
+    if (event.target === modal) {
+      closeModal();
+    }
+  };
+</script>
+
 
 <script>
   let headerBuilt = false;
@@ -270,14 +557,14 @@
   });
 
   document.getElementById('buildBtn').addEventListener('click', () => {
-    const inputs = ['adverb1', 'noun', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
     const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
     appendToBuiltAll(joinParts(parts), false);
     clearInputs(inputs);
   });
 
   document.querySelectorAll('.builder-section')[0].querySelector('.lineBreakBtn').addEventListener('click', () => {
-    const inputs = ['adverb1', 'noun', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
     const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
     appendToBuiltAll(joinParts(parts), true);
     clearInputs(inputs);
@@ -321,4 +608,3 @@
 
 </body>
 </html>
-
