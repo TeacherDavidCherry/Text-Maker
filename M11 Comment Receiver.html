@@ -2,30 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Comment Receiver</title>
+  <title>Send Comments</title>
 </head>
 <body>
-  <h1>Comments for this page</h1>
-
-  <!-- Display submitted comment -->
-  <div id="commentDisplay">
-    <h2>Your Comment:</h2>
-    <p id="commentText">No comment submitted yet.</p>
-  </div>
+  <h2>Send Comments</h2>
+  <form id="commentForm">
+    <label for="comments">Enter your comments:</label><br />
+    <textarea id="comments" name="comments" rows="5" cols="40"></textarea><br /><br />
+    <button type="submit">Send to Receiver Page</button>
+  </form>
 
   <script>
-    // Get the comment from URL query parameter 'comment'
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
-
-    const comment = getQueryParam('comment');
-    if (comment) {
-      // Decode URI component and display
-      document.getElementById('commentText').textContent = decodeURIComponent(comment);
-    }
+    document.getElementById('commentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const comments = encodeURIComponent(document.getElementById('comments').value);
+      // Redirect to receiver page with comments in URL
+      window.location.href = 'receiver.html?comments=' + comments;
+    });
   </script>
 </body>
 </html>
