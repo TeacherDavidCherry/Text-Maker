@@ -606,15 +606,19 @@ Note: When the Wh-word is the subject, do not use do/does/did.`
   autoResizeTextarea(); // <-- NEW
 </script>
 <script>
-  function sendComment(pageCode, commentText) {
-    // Encode comment text for URL
-    const encodedComment = encodeURIComponent(commentText);
-    // Construct target URL for the comment receiver page
-    const url = `https://teacherdavidcherry.github.io/Text-Maker/${pageCode}%20Comment%20Receiver.html?comment=${encodedComment}`;
-    // Redirect/open page
-    window.location.href = url;
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  const comment = getQueryParam('comment');
+  if (comment) {
+    document.getElementById('commentText').textContent = decodeURIComponent(comment);
+  } else {
+    console.warn("No 'comment' parameter found in URL:", window.location.href);
   }
 </script>
+
 <!-- Input field to enter the comment -->
 <textarea id="prefilledComment" rows="4" cols="50" placeholder="Enter your comment here..."></textarea>
 <br><br>
