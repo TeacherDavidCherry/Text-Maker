@@ -605,34 +605,26 @@ Note: When the Wh-word is the subject, do not use do/does/did.`
 
   autoResizeTextarea(); // <-- NEW
 </script>
-  <script>
-  function loadCommentForPage(pageKey) {
-    const comment = localStorage.getItem('comment_' + pageKey);
-    if (comment) {
-      const commentBox = document.getElementById('comment');
-      if (commentBox) {
-        // Append the new comment to any existing text in the box
-        commentBox.value += (commentBox.value ? '\n\n' : '') + comment;
-        // Clear the localStorage key after loading
-        localStorage.removeItem('comment_' + pageKey);
-      }
-    }
+<script>
+  function sendComment(pageCode, commentText) {
+    // Encode comment text for URL
+    const encodedComment = encodeURIComponent(commentText);
+    // Construct target URL for the comment receiver page
+    const url = `https://teacherdavidcherry.github.io/Text-Maker/${pageCode}%20Comment%20Receiver.html?comment=${encodedComment}`;
+    // Redirect/open page
+    window.location.href = url;
   }
-
-  window.onload = () => {
-    // Replace 'M11' with the correct page key for each file:
-    loadCommentForPage('M11');
-  };
 </script>
 <!-- Input field to enter the comment -->
 <textarea id="prefilledComment" rows="4" cols="50" placeholder="Enter your comment here..."></textarea>
 <br><br>
 
-<!-- Buttons to send to each page -->
-<button onclick="sendToPage('M11')">M11</button>
-<button onclick="sendToPage('M12')">M12</button>
-<button onclick="sendToPage('M13')">M13</button>
-<button onclick="sendToPage('M15')">M15</button>
-<button onclick="sendToPage('M17')">M17</button>
+<div>
+  <button onclick="sendComment('M11', 'This is a comment for M11')">Send Comment to M11</button>
+  <button onclick="sendComment('M12', 'Feedback for M12 here')">Send Comment to M12</button>
+  <button onclick="sendComment('M13', 'Notes for M13')">Send Comment to M13</button>
+  <button onclick="sendComment('M15', 'Thoughts on M15')">Send Comment to M15</button>
+  <button onclick="sendComment('M17', 'My comment on M17')">Send Comment to M17</button>
+</div>
 </body>
 </html>
