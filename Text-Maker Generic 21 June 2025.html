@@ -606,18 +606,23 @@ Note: When the Wh-word is the subject, do not use do/does/did.`
   autoResizeTextarea(); // <-- NEW
 </script>
   <script>
-  function sendToPage(pageKey) {
-    const commentText = document.getElementById('prefilledComment').value.trim();
-    
-    if (!commentText) {
-      alert("Please enter a comment before sending.");
-      return;
+  function loadCommentForPage(pageKey) {
+    const comment = localStorage.getItem('comment_' + pageKey);
+    if (comment) {
+      const commentBox = document.getElementById('comment');
+      if (commentBox) {
+        // Append the new comment to any existing text in the box
+        commentBox.value += (commentBox.value ? '\n\n' : '') + comment;
+        // Clear the localStorage key after loading
+        localStorage.removeItem('comment_' + pageKey);
+      }
     }
-
-    // Store in localStorage with the matching page key
-    localStorage.setItem('comment_' + pageKey, commentText);
-    alert(`Comment sent to ${pageKey} page!`);
   }
+
+  window.onload = () => {
+    // Replace 'M11' with the correct page key for each file:
+    loadCommentForPage('M11');
+  };
 </script>
 <!-- Input field to enter the comment -->
 <textarea id="prefilledComment" rows="4" cols="50" placeholder="Enter your comment here..."></textarea>
