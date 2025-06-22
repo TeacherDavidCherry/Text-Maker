@@ -609,24 +609,34 @@ Note: When the Wh-word is the subject, do not use do/does/did.`
   autoResizeTextarea(); // <-- NEW
 </script>
  <script>
-    document.getElementById('send-btn').addEventListener('click', () => {
-      const comment = document.getElementById('comment-input').value.trim();
+    document.getElementById('sendBtn').addEventListener('click', () => {
+      const comment = document.getElementById('commentInput').value.trim();
       if (!comment) {
         alert('Please enter a comment before sending.');
         return;
       }
-      // Encode comment and navigate to receiver page with comment as query param
+      const receiverPage = document.getElementById('receiverSelect').value;
       const encodedComment = encodeURIComponent(comment);
-      window.location.href = `receiver.html?comments=${encodedComment}`;
+      window.location.href = `${receiverPage}?comments=${encodedComment}`;
     });
   </script>
 
 <div id="receiverButtons" style="margin-top: 20px;">
-  <button onclick="sendComment('M11 Comment Receiver.html')">Send to M11</button>
-  <button onclick="sendComment('M12 Comment Receiver.html')">Send to M12</button>
-  <button onclick="sendComment('M13 Comment Receiver.html')">Send to M13</button>
-  <button onclick="sendComment('M15 Comment Receiver.html')">Send to M15</button>
-  <button onclick="sendComment('M17 Comment Receiver.html')">Send to M17</button>
+  <h2>Sender Page</h2>
+  
+  <label for="commentInput">Enter your comment:</label><br />
+  <input type="text" id="commentInput" placeholder="Type comment here" /><br /><br />
+  
+  <label for="receiverSelect">Select receiver page:</label><br />
+  <select id="receiverSelect">
+    <option value="receiver1.html">Receiver 1 (M11)</option>
+    <option value="receiver2.html">Receiver 2 (M12)</option>
+    <option value="receiver3.html">Receiver 3 (M13)</option>
+    <option value="receiver4.html">Receiver 4 (M14)</option>
+    <option value="receiver5.html">Receiver 5 (M15)</option>
+  </select><br /><br />
+  
+  <button id="sendBtn">Send Comment</button>
 </div>
 </body>
 </html>
