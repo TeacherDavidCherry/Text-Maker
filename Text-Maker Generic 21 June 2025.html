@@ -615,9 +615,16 @@ Note: When the Wh-word is the subject, do not use do/does/did.`
       alert("Please enter a comment in the Rough Draft Box before sending.");
       return;
     }
+    // Encode comment to be safely included in URL query string
     const encodedComment = encodeURIComponent(comment);
+
+    // Base URL for the receiver files
     const baseUrl = "https://teacherdavidcherry.github.io/Text-Maker/";
-    const fullUrl = baseUrl + receiverFile + "?comments=" + encodedComment;
+
+    // Construct the full URL including receiver filename and comment query param
+    const fullUrl = `${baseUrl}${receiverFile}?comments=${encodedComment}`;
+
+    // Redirect the browser to the receiver URL
     window.location.href = fullUrl;
   }
 </script>
