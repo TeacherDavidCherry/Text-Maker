@@ -605,6 +605,29 @@ Note: When the Wh-word is the subject, do not use do/does/did.`
 
   autoResizeTextarea(); // <-- NEW
 </script>
+  <script>
+  function sendToPage(pageKey) {
+    const commentText = document.getElementById('prefilledComment').value.trim();
+    
+    if (!commentText) {
+      alert("Please enter a comment before sending.");
+      return;
+    }
 
+    // Store in localStorage with the matching page key
+    localStorage.setItem('comment_' + pageKey, commentText);
+    alert(`Comment sent to ${pageKey} page!`);
+  }
+</script>
+<!-- Input field to enter the comment -->
+<textarea id="prefilledComment" rows="4" cols="50" placeholder="Enter your comment here..."></textarea>
+<br><br>
+
+<!-- Buttons to send to each page -->
+<button onclick="sendToPage('M11')">M11</button>
+<button onclick="sendToPage('M12')">M12</button>
+<button onclick="sendToPage('M13')">M13</button>
+<button onclick="sendToPage('M15')">M15</button>
+<button onclick="sendToPage('M17')">M17</button>
 </body>
 </html>
