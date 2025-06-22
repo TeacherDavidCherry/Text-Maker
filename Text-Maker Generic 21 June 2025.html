@@ -208,6 +208,9 @@ pre {
   #copyBtn:hover {
     background-color: #1e7e34;
   }
+#receiverButtons button {
+  margin: 5px;
+}
 </style>
 </head>
 <body>
@@ -606,29 +609,25 @@ Note: When the Wh-word is the subject, do not use do/does/did.`
   autoResizeTextarea(); // <-- NEW
 </script>
 <script>
-  function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-  }
-
-  const comment = getQueryParam('comment');
-  if (comment) {
-    document.getElementById('commentText').textContent = decodeURIComponent(comment);
-  } else {
-    console.warn("No 'comment' parameter found in URL:", window.location.href);
+  function sendComment(receiverFile) {
+    const comment = document.getElementById('builtAll').value.trim();
+    if (!comment) {
+      alert("Please enter a comment in the Rough Draft Box before sending.");
+      return;
+    }
+    const encodedComment = encodeURIComponent(comment);
+    const baseUrl = "https://teacherdavidcherry.github.io/Text-Maker/";
+    const fullUrl = baseUrl + receiverFile + "?comments=" + encodedComment;
+    window.location.href = fullUrl;
   }
 </script>
 
-<!-- Input field to enter the comment -->
-<textarea id="prefilledComment" rows="4" cols="50" placeholder="Enter your comment here..."></textarea>
-<br><br>
-
-<div>
-  <button onclick="sendComment('M11', 'This is a comment for M11')">Send Comment to M11</button>
-  <button onclick="sendComment('M12', 'Feedback for M12 here')">Send Comment to M12</button>
-  <button onclick="sendComment('M13', 'Notes for M13')">Send Comment to M13</button>
-  <button onclick="sendComment('M15', 'Thoughts on M15')">Send Comment to M15</button>
-  <button onclick="sendComment('M17', 'My comment on M17')">Send Comment to M17</button>
+<div id="receiverButtons" style="margin-top: 20px;">
+  <button onclick="sendComment('M11 Comment Receiver.html')">Send to M11</button>
+  <button onclick="sendComment('M12 Comment Receiver.html')">Send to M12</button>
+  <button onclick="sendComment('M13 Comment Receiver.html')">Send to M13</button>
+  <button onclick="sendComment('M15 Comment Receiver.html')">Send to M15</button>
+  <button onclick="sendComment('M17 Comment Receiver.html')">Send to M17</button>
 </div>
 </body>
 </html>
