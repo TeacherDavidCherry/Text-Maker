@@ -1,63 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Comment Receiver</title>
-  <style>
-    #commentList {
-      border: 1px solid #ccc;
-      padding: 10px;
-      max-width: 600px;
-      font-family: sans-serif;
-    }
-    .comment {
-      margin-bottom: 10px;
-      padding: 6px;
-      background: #f5f5f5;
-      border-radius: 4px;
-    }
-  </style>
 </head>
 <body>
-  <h2>Comment Feed</h2>
+  <h1>Comments for this page</h1>
 
-  <div id="commentList">
-    <!-- Comments will be inserted here -->
+  <!-- Display submitted comment -->
+  <div id="commentDisplay">
+    <h2>Your Comment:</h2>
+    <p id="commentText">No comment submitted yet.</p>
   </div>
 
   <script>
-    // Optional: supports adding a comment from URL query param (like ?comment=hello)
+    // Get the comment from URL query parameter 'comment'
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
-    function addCommentToPage(text) {
-      const commentList = document.getElementById('commentList');
-      const newComment = document.createElement('div');
-      newComment.className = 'comment';
-      newComment.textContent = text;
-      commentList.appendChild(newComment);
+    const comment = getQueryParam('comment');
+    if (comment) {
+      // Decode URI component and display
+      document.getElementById('commentText').textContent = decodeURIComponent(comment);
     }
-
-    function loadCommentForPage(pageKey) {
-      const comment = localStorage.getItem('comment_' + pageKey);
-      if (comment) {
-        addCommentToPage(comment);
-        localStorage.removeItem('comment_' + pageKey);
-      }
-    }
-
-    window.onload = () => {
-      // Support both query param and localStorage
-      const prefilledComment = getQueryParam('comment');
-      if (prefilledComment) {
-        addCommentToPage(decodeURIComponent(prefilledComment));
-      }
-
-      // Replace 'M11' with the correct key for this page
-      loadCommentForPage('M11');
-    };
   </script>
 </body>
 </html>
