@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Test-Maker</title>
+<style>
+body {
+  font-family: sans-serif;
+  max-width: 95vw;
+  margin: 40px auto;
+  padding: 20px;
+  background: #eef6fb; /* Light pastel blue */
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+h1 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: #333;
+  margin: 0 15px 0 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 50px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 800px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
+}
+
+pre {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Section Layout */
+.builder-section {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.shirt-iep-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.shirt-iep-container input[type="text"],
+#sessionDate {
+  min-width: 17ch;
+  max-width: 17ch;
+}
+
+/* Inputs */
+input[type="text"] {
+  font-size: 16px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: content-box;
+  min-width: 2ch;
+  max-width: 30ch;
+  width: auto;
+  transition: width 0.15s ease;
+  font-family: inherit;
+  autocapitalize: off;
+}
+
+#punctuation {
+  width: 4ch !important;
+  font-size: 16px;
+  text-align: center;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+#auxQM,
+#whQM {
+  width: 2ch;
+  text-align: center;
+}
+
+/* Buttons */
+button {
+  display: inline-block;
+  padding: 6px 10px;
+  font-size: 16px;
+  border: none;
+  background-color: #5a9bd8; /* Medium pastel blue */
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 6px;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #3c7cb3; /* Darker hover for visibility */
+}
+
+.lineBreakBtn {
+  background-color: #5a9bd8;
+}
+
+.lineBreakBtn:hover {
+  background-color: #3c7cb3;
+}
+
+#copyBtn,
+#txtDownloadBtn {
+  background-color: #5a9bd8;
+  margin-left: 10px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  font-size: 16px;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#copyBtn:hover,
+#txtDownloadBtn:hover {
+  background-color: #3c7cb3;
+}
+
+/* Output */
+#builtAll {
+  font-size: 18px;
+  width: 50%;
+  min-width: 300px;
+  min-height: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #fff;
+  box-sizing: border-box;
+  resize: both;
+  font-family: inherit;
+  color: #222;
+  white-space: pre-wrap;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+/* Dynamic width calculation */
+#widthCalc {
+  position: absolute;
+  visibility: hidden;
+  white-space: nowrap;
+  font-size: 16px;
+  font-family: inherit;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  box-sizing: content-box;
+}
+
+/* Symbols */
+.plus {
+  font-weight: normal;
+  font-size: 16px;
+  user-select: none;
+  flex-shrink: 0;
+}
+/* Custom Input Colors */
+#shirtNumber           { background-color: #ffffff; } /* light red */
+#iepGroupNumber        { background-color: #ffffff; } /* peach */
+#sessionDate           { background-color: #ffffff; } /* light green */
+
+#adverb1               { background-color: #e6f9e6; }
+#subject               { background-color: #ffffff; }
+#negation              { background-color: #e6f9e6; }
+#adverbBetweenNegVerb  { background-color: #e6f9e6; }
+#verb                  { background-color: #ffffff; }
+#adverb2               { background-color: #e6f9e6; }
+#object                { background-color: #ffffff; }
+#subjectComplement     { background-color: #ffffff; }
+#adverb3               { background-color: #e6f9e6; }
+#punctuation           { background-color: #ffffff; }
+#joiner                { background-color: #e6f9e6; }
+
+#auxVerb               { background-color: #e6f9e6; }
+#auxSubject            { background-color: #ffffff; }
+#auxAdverbBeforeVerb   { background-color: #e6f9e6; }
+#auxVerb2              { background-color: #ffffff; }
+#auxAdverbAfterVerb    { background-color: #e6f9e6; }
+#auxObject             { background-color: #ffffff; }
+#auxSubjectComplement  { background-color: #ffffff; }
+#auxAdverb             { background-color: #e6f9e6; }
+#auxQM                 { background-color: #ffffff; }
+
+#whWord                { background-color: #ffffff; }
+#whSubject             { background-color: #ffffff; }
+#whAdverbBetweenSubjectVerb { background-color: #e6f9e6; }
+#whVerb                { background-color: #ffffff; }
+#whAdverbAfterVerb     { background-color: #e6f9e6; } 
+#whObject              { background-color: #ffffff; }
+#whSubjectComplement   { background-color: #ffffff; }
+#whAdverb              { background-color: #e6f9e6; }
+#whQM                  { background-color: #ffffff; }
+
+</style>
+</head>
+<body>
+<!-- The body content remains unchanged -->
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="modalTitle"></h2>
+    <pre id="modalText"></pre>
+  </div>
+</div>
+
+<div class="shirt-iep-container" aria-label="Shirt Number, IEP Group Number, and Date">
+  <input id="shirtNumber" type="text" placeholder="Shirt Number" aria-label="Shirt Number" autocapitalize="off" />
+  <input id="iepGroupNumber" type="text" placeholder="IEP Group Number" aria-label="IEP Group Number" autocapitalize="off" />
+  <input id="sessionDate" type="text" placeholder="Date" aria-label="Date (optional)" autocapitalize="off" />
+  <button id="buildHeaderBtn" title="Build Header">Build</button>
+</div>
+
+<div class="builder-section" aria-label="Sentence builder">
+  <h2>Sentence:</h2>
+  <input id="adverb1" type="text" placeholder="time/place" />
+  <input id="subject" type="text" placeholder="S" />
+  <input id="negation" type="text" placeholder="neg." />
+  <input id="adverbBetweenNegVerb" type="text" placeholder="frequency" />
+  <input id="verb" type="text" placeholder="V" />
+  <input id="adverb2" type="text" placeholder="manner" />
+  <input id="object" type="text" placeholder="O/SC" />
+  <input id="adverb3" type="text" placeholder="time/place" />
+  <input id="punctuation" type="text" placeholder=".,!" maxlength="1" />
+  <input id="joiner" type="text" placeholder="joiner" />
+  <button id="buildBtn">Build on same line</button>
+  <button class="lineBreakBtn">Build on next line</button>
+</div>
+
+<div class="builder-section" aria-label="Yes/No question builder">
+  <h2>Yes/No Question:</h2>
+  <input id="auxVerb" type="text" placeholder="be/do/can/have" />
+  <input id="auxSubject" type="text" placeholder="S" />
+  <input id="auxAdverbBeforeVerb" type="text" placeholder="frequency" />
+  <input id="auxVerb2" type="text" placeholder="V" />
+  <input type="text" id="auxAdverbAfterVerb" class="green-input" placeholder="manner" /> 
+  <input id="auxObject" type="text" placeholder="O/S" />
+  <input id="auxAdverb" type="text" placeholder="time/place" />
+  <input id="auxQM" type="text" placeholder="?" maxlength="1" style="width: 2ch; text-align:center;" />
+  <button id="buildYesNoQuestionBtn">Build on same line</button>
+  <button class="lineBreakBtn">Build on next line</button>
+</div>
+
+<div class="builder-section" aria-label="Wh question builder">
+  <h2>Wh- Question:</h2>
+  <input id="whWord" type="text" placeholder="who/what/where/when/why/how" />
+  <input id="whSubject" type="text" placeholder="S" />
+  <input id="whAdverbBetweenSubjectVerb" type="text" placeholder="frequency" />
+  <input id="whVerb" type="text" placeholder="V" />
+  <!-- Added field --> <input type="text" id="whAdverbAfterVerb" class="green-input" placeholder="manner" /> <!-- Added field -->
+  <input id="whObject" type="text" placeholder="O/SC" />
+  <input id="whAdverb" type="text" placeholder="time/place" />
+  <input id="whQM" type="text" placeholder="?" maxlength="1" style="width: 2ch; text-align:center;" />
+  <button id="buildWhQuestionBtn">Build on same line</button>
+  <button class="lineBreakBtn">Build on next line</button>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
+  <h2>Rough Draft:</h2>
+  <textarea id="builtAll" aria-label="Rough draft output"></textarea>
+  <button id="copyBtn">Copy</button>
+  <button id="txtDownloadBtn">TXT</button> <!-- New button added here -->
+</div>
+<span id="widthCalc" aria-hidden="true"></span>
+
+
+<script>
+  let headerBuilt = false;
+
+  function adjustWidth(el) {
+    const span = document.getElementById('widthCalc');
+    span.style.font = window.getComputedStyle(el).font;
+    span.textContent = el.value || el.placeholder || '';
+    let width = span.offsetWidth + 20;
+    if (width < 35) width = 35;
+    el.style.width = width + 'px';
+  }
+
+  function autoResizeTextarea() { // <-- NEW
+    const textarea = document.getElementById('builtAll');
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+
+  function clearInputs(ids) {
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.value = '';
+        adjustWidth(el);
+      }
+    });
+  }
+
+  function joinParts(parts) {
+    if (parts.length === 0) return '';
+    let result = parts[0];
+    for (let i = 1; i < parts.length; i++) {
+      if (/^[.,!?]$/.test(parts[i])) {
+        result += parts[i];
+      } else {
+        result += ' ' + parts[i];
+      }
+    }
+    return result;
+  }
+
+  document.querySelectorAll('input[type="text"]').forEach(input => {
+    adjustWidth(input);
+    input.addEventListener('input', () => adjustWidth(input));
+  });
+
+  function appendToBuiltAll(text, addLineBreak) { // <-- CHANGED
+    const built = document.getElementById('builtAll');
+    if (built.value) {
+      built.value += addLineBreak ? '\n' + text : (built.value.endsWith('\n') ? text : ' ' + text);
+    } else {
+      built.value = text;
+    }
+    autoResizeTextarea(); // <-- NEW
+  }
+
+  document.getElementById('buildHeaderBtn').addEventListener('click', () => {
+    if (headerBuilt) return;
+    const shirt = document.getElementById('shirtNumber').value.trim();
+    const iep = document.getElementById('iepGroupNumber').value.trim();
+    const date = document.getElementById('sessionDate').value.trim();
+    const headerParts = [shirt, iep, date].filter(Boolean);
+    if (headerParts.length > 0) {
+      const headerStr = headerParts.join(' | ');
+      const built = document.getElementById('builtAll');
+      built.value += (built.value ? '\n\n' : '') + headerStr + '\n\n';
+      headerBuilt = true;
+      document.getElementById('buildHeaderBtn').disabled = true;
+      autoResizeTextarea(); // <-- NEW
+    }
+  });
+
+  document.getElementById('buildBtn').addEventListener('click', () => {
+    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), false);
+    clearInputs(inputs);
+  });
+
+  document.querySelectorAll('.builder-section')[0].querySelector('.lineBreakBtn').addEventListener('click', () => {
+    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), true);
+    clearInputs(inputs);
+  });
+
+  function buildYesNoQuestion(addLineBreak) {
+    const inputs = ['auxVerb', 'auxSubject', 'auxAdverbBeforeVerb', 'auxVerb2', 'auxAdverbAfterVerb', 'auxObject', 'auxSubjectComplement', 'auxAdverb', 'auxQM'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), addLineBreak);
+    clearInputs(inputs);
+  }
+
+  document.getElementById('buildYesNoQuestionBtn').addEventListener('click', () => buildYesNoQuestion(false));
+  document.querySelectorAll('.builder-section')[1].querySelector('.lineBreakBtn').addEventListener('click', () => buildYesNoQuestion(true));
+
+  function buildWhQuestion(addLineBreak) {
+    const inputs = ['whWord', 'whSubject', 'whAdverbBetweenSubjectVerb', 'whVerb', 'whAdverbAfterVerb', 'whObject', 'whSubjectComplement', 'whAdverb', 'whQM'];
+    const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    appendToBuiltAll(joinParts(parts), addLineBreak);
+    clearInputs(inputs);
+  }
+
+  document.getElementById('buildWhQuestionBtn').addEventListener('click', () => buildWhQuestion(false));
+  document.querySelectorAll('.builder-section')[2].querySelector('.lineBreakBtn').addEventListener('click', () => buildWhQuestion(true));
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const textArea = document.getElementById('builtAll');
+    textArea.select();
+    textArea.setSelectionRange(0, 99999);
+    try {
+      document.execCommand('copy');
+      alert('Copied to clipboard!');
+    } catch (err) {
+      alert('Copy failed. Please copy manually.');
+    }
+    window.getSelection().removeAllRanges();
+  });
+
+  autoResizeTextarea(); // <-- NEW
+
+
+document.getElementById('txtDownloadBtn').addEventListener('click', () => {
+  const text = document.getElementById('builtAll').value;
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'rough_draft.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  
+  URL.revokeObjectURL(url);
+});
+
+</script>
+
+</body>
+</html>
