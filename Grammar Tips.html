@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Grammar Tips Buttons</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 95vw;
+      margin: 40px auto;
+      padding: 20px;
+      background: #eef6fb;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #333;
+      margin: 0 15px 0 0;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    #buttons {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .grammar-label {
+      margin: 0;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      padding-top: 50px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 800px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    button {
+      display: inline-block;
+      padding: 6px 10px;
+      font-size: 16px;
+      border: none;
+      background-color: #5a9bd8;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #3c7cb3;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="buttons">
+    <h2 class="grammar-label">Grammar Tips:</h2>
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <pre id="modalText"></pre>
+    </div>
+  </div>
+
+  <script>
+    const tips = {
+      "Determiners": `
+
+Words that come before nouns to show quantity, possession, specificity, or question. They help mark nouns clearly in a sentence.
+
+• Articles: a, an, the
+• Demonstratives: this, that, these, those
+• Possessives: my, your, his, her, its, our, their
+• Distributives: each, every, either, neither
+• Interrogatives: which, what, whose
+• Numbers: Cardinal: one, two, three...Ordinal: first, second, third...
+• Quantifiers: some, any, much, many, few, several, all, both, half, enough, plenty of, a lot of, another
+
+An example of articles and pronouns in a paragraph:
+
+An elephant was walking in the jungle. The elephant saw a banana. He ate the banana. It was delicious.`,
+      "Nouns": `
+Nouns are used to name people, places, things, or ideas; they can act as subjects or objects in a sentence.
+
+People - boy, girl, football player
+Animals - cat, dog, tiger
+Objects - robot, computer, phone, table, desk, food
+Places - Thailand, Bangkok, BCC
+Ideas - idea, belief, love, happiness`,
+      "Subject Pronouns": ` - Used to replace nouns as the subject
+of a sentence, avoiding repetition.
+
+First Person Singular: I
+Second Person Singular: You
+Third Person Singular: He, She, It
+First Person Plural: We
+Second Person Plural: You
+Third Person Plural: They
+
+Object Pronouns - Used to replace nouns as the object of a verb or preposition, avoiding repetition.
+
+First Person Singular: me
+Second Person Singular: you
+Third Person Singular: him, her, it
+First Person Plural: us
+Second Person Plural: you
+Third Person Plural: them`,
+      "Indefinite Pronouns": ` - Used to refer to an unspecified person, place, or thing without naming them directly.
+
+People: someone, somebody, everyone, everybody, no one, nobody, anyone, anybody
+Things: something, everything, nothing, anything
+Places: somewhere, everywhere, nowhere, anywhere
+Other: one, each, every, either, neither, much, little
+
+Plural Indefinite Pronouns: both, others, all, some, any, many, several, few, none, more, most`,
+      "Verbs": `
+
+Verbs are used to express actions or states in a sentence.
+
+Subject + Verb + Object.
+
+Regular verbs end in –ed for the past tense (V2) and past participle (V3).
+
+Irregular verbs have unique V2 and V3 forms that should be memorized.
+
+A Few Essential Verbs for Daily Use
+
+Sensing - hear, see, smell, taste, feel
+Basic Actions - open, close, start, stop
+Thinking - think, know, remember, understand
+Feelings - like, love, hate, feel
+Possession - have, own
+Daily Activities – live, eat, drink, sleep, wake up, work, study
+Communication - ask, say, tell, show, meet
+Movement - come, go, leave, walk, run, jump, swim
+Travel - drive, ride, operate, pilot, navigate
+Sports - catch, kick, score, win`,
+      "State Verbs": ` – State verbs describe a state of being, emotions, mental states or possession. These verbs are not used in continuous tenses.
+
+State Verb Test – A state verb is either on or off:
+You want something, or you don’t.
+You need something, or you don’t.
+You like something, or you don’t.
+You love something, or you don’t.
+You hate something, or you don’t.
+You think something, or you don’t.
+You know something, or you don’t.
+You understand something, or you don’t.
+You remember something, or you don’t.
+You forgot something, or you didn’t.
+You believe something, or you don’t. `,
+      "Present Simple": `
+(facts, habits, routines; things that are always true; or events that happen on a schedule or timetable)
+Positive Statements
+S (noun or subject pronoun) + main verb (base form — add "s" or "es" for he/she/it) + O
+Spelling note for 3rd person singular:
+Add -s (e.g., eats), or -es if the verb ends in -ch, -sh, -ss, -x, -o (e.g., watches, washes, kisses, fixes, goes), or cut the y and add -ies (e.g., studies, copies)
+Examples:
+I/You/We/They eat pizza.
+He/She/It eats pizza.
+________________________________________
+Negative Statements
+S + do/does + not + main verb (base form) + O
+Examples:
+I/You/We/They do not (don’t) eat pizza.
+He/She/It does not (doesn’t) eat pizza.
+________________________________________
+Questions
+Do/Does + S + main verb (base form) + O?
+Examples:
+Do I/you/we/they eat pizza?
+Does he/she/it eat pizza?
+________________________________________
+Short Answers
+Yes, I/you/we/they do. / No, I/you/we/they don’t.
+Yes, he/she/it does. / No, he/she/it doesn’t.
+________________________________________
+
+Present Simple Time expressions:
+•	every day / week / month
+•	always / usually / often / sometimes / rarely / never
+•	in the morning / on Mondays
+•	at night / at the weekend
+•	once a week / twice a month
+________________________________________
+Additional Note on “Have Got” (British English Possession)
+Positive Statements
+S + have/has got + noun (possession)
+Examples:
+I/You/We/They have got pizza.
+He/She/It has got pizza.
+________________________________________
+Negative Statements
+S + have/has + not + got + noun
+Examples:
+I/You/We/They have not (haven’t) got pizza.
+He/She/It has not (hasn’t) got pizza.
+________________________________________
+Questions
+Have/Has + S + got + noun?
+Examples:
+Have you got pizza?
+Has he got pizza?
+________________________________________
+Short Answers
+Yes, I/you/we/they have. / No, I/you/we/they haven’t.
+Yes, he/she/it has. / No, he/she/it hasn’t.`,
+
+      "Present Simple for the Verb “To Be” ": `
+(Note: am/is/are act as both main and auxiliary verb)
+
+Positive Statements
+S + am/is/are + complement (adjective, noun, or prepositional phrase)
+Examples:
+I am hungry. (adj)
+I am a student. (noun)
+I am at school. (prep phrase)
+You/We/They are hungry. (adj)
+You/We/They are students. (noun)
+You/We/They are at school. (prep phrase)
+He/She/It is hungry. (adj)
+He/She is a student. It is a pizza. (noun)
+He/She is at school. It is on the table. (prep phrase)
+________________________________________
+Negative Statements
+S + am/is/are + not + complement
+Examples:
+I am not hungry. (adj)
+I am not a teacher. (noun)
+I am not at home. (prep phrase)
+You/We/They are not (aren’t) hungry. (adj)
+You/We/They are not (aren’t) students. (noun)
+You/We/They are not (aren’t) in the room. (prep phrase)
+He/She/It is not (isn’t) hungry. (adj)
+He/She is not (isn’t) a waiter. It is not a pizza. (noun)
+He/She is not at school. It is not (isn’t) on the table. (prep phrase)
+________________________________________
+Questions
+Am/Is/Are + S + complement?
+Examples:
+Am I hungry? (adj)
+Am I a student? (noun)
+Am I at school? (prep phrase)
+Are you/we/they hungry? (adj)
+Are you/we/they students? (noun)
+Are you/we/they at school? (prep phrase)
+Is he/she/it hungry? (adj)
+Is he/she/it a student? (noun)
+Is he/she at school? Is it on the table? (prep phrase)
+________________________________________
+Short Answers
+Yes, I am. / No, I am not (I’m not).
+Yes, you/we/they are. / No, you/we/they aren’t.
+Yes, he/she/it is. / No, he/she/it isn’t.
+________________________________________
+Verb “To Be” (Most Common Linking Verb)
+Positive Statements
+S + am/is/are + complement
+Examples:
+I am a student.
+They are students.
+The pizza is hot.
+The pizza is a work of art.
+________________________________________
+Using “Like” with Nouns
+To express similarity (not identity), use “like” instead of “to be.”
+Examples:
+The pizza is like a work of art.
+The slice looks like a triangle.
+The pizza smells like cheese.
+Do NOT use “like” before adjectives.
+Correct: The pizza is delicious.
+Incorrect: The pizza is like delicious.`,
+
+      "Other State-of-Being Linking Verbs": `
+(become, get, turn, stay, remain, prove)
+Positive Statements
+S + linking verb + complement
+Examples:
+The pizza became cold.
+The pizza gets burned.
+The pizza remains tasty.
+________________________________________
+Negative Statements
+S + do/does + not + linking verb (base form) + complement
+Examples:
+The pizza does not (doesn’t) become cold.
+They do not (don’t) get hungry.
+The pizza doesn’t stay hot.
+Note: It’s often more natural to use “be” verbs in negatives:
+More natural: The pizza is not cold.
+Also correct: The pizza does not become cold.
+________________________________________
+Questions
+Do/Does + S + linking verb (base form) + complement?
+Examples:
+Does the pizza become/get/remain cold?
+Do you become hungry?
+Do the slices remain fresh?
+________________________________________
+Short Answers
+Yes, it does. / No, it doesn’t.
+Yes, I do. / No, I don’t.`,
+
+      "Sensory Linking Verbs": `
+(sound, look, smell, taste, feel, seem, appear, grow)
+Positive Statements
+S + sensory linking verb + complement (usually adjective)
+Examples:
+The pizza tastes delicious.
+The pizza smells fresh.
+The pizza looks hot.
+________________________________________
+Using "Like" with Sensory Linking Verbs
+Use "like" with nouns to express similarity.
+Examples:
+The pizza looks like a star.
+The sauce smells like garlic.
+The pizza tastes like cheese.
+Note: Never use “like” before adjectives.
+________________________________________
+Negative Statements
+S + do/does + not + sensory linking verb (base form) + complement
+Examples:
+The pizza does not (doesn’t) taste good.
+They do not (don’t) look hungry.
+The pizza doesn’t smell fresh.
+________________________________________
+Questions
+Do/Does + S + sensory linking verb (base form) + complement?
+Examples:
+Does the pizza taste fresh?
+Do the slices look tasty?
+________________________________________
+Short Answers
+Yes, it does. / No, it doesn’t.
+Yes, they do. / No, they don’t.`,
+
+      "Present Continuous": `
+(current time; things happening now, today, this week, this month, this year; and things we plan to do)
+Positive Statements
+S + am/is/are + main verb + “-ing” + O
+Examples:
+I am eating pizza.
+You/We/They are eating pizza.
+He/She/It is eating pizza.
+________________________________________
+Negative Statements
+S + am/is/are + not + main verb + “-ing” + O
+Examples:
+I am not eating pizza.
+You/We/They are not (aren’t) eating pizza.
+He/She/It is not (isn’t) eating pizza.
+________________________________________
+Questions
+Am/Is/Are + S + main verb + “-ing” + O?
+Examples:
+Am I eating pizza?
+Are you/we/they eating pizza?
+Is he/she/it eating pizza?
+________________________________________
+Short Answers
+Yes, I am. / No, I am not (I’m not).
+Yes, you/we/they are. / No, you/we/they aren’t.
+Yes, he/she/it is. / No, he/she/it isn’t.
+
+________________________________________
+Present Continuous Time expressions:
+•	now / right now
+•	at the moment / at present
+•	currently / nowadays
+•	today / this week / this month`,
+
+      "Present Perfect": `
+(currently relevant big changes, big experiences, big achievements, or big news from non-specific time in the past — recent, long ago, for a while, or up until now.)
+Positive Statements
+S + have/has + past participle (V3) + O
+Examples:
+I/You/We/They have eaten pizza.
+He/She/It has eaten pizza.
+________________________________________
+Negative Statements
+S + have/has + not + past participle + O
+Examples:
+I/You/We/They have not (haven’t) eaten pizza.
+He/She/It has not (hasn’t) eaten pizza.
+________________________________________
+Questions
+Have/Has + S + past participle + O?
+Examples:
+Have I/you/we/they eaten pizza?
+Has he/she/it eaten pizza?
+________________________________________
+Short Answers
+Yes, I/you/we/they have. / No, I/you/we/they haven’t.
+Yes, he/she/it has. / No, he/she/it hasn’t.
+________________________________________
+Time expressions:
+•	already / yet / just
+•	ever / never / before
+•	so far / up to now
+•	since / for
+•	recently / lately`,
+
+      "Present Perfect Continuous": `
+(relevant actions started in the past, continuing or showing duration up until now — today, this week, this month, this year — often temporary, or explaining why things are the way they are)
+Positive Statements
+S + have/has + been + main verb + “-ing” + O
+Examples:
+I/You/We/They have been eating pizza.
+He/She/It has been eating pizza.
+________________________________________
+Negative Statements
+S + have/has + not + been + main verb + “-ing” + O
+Examples:
+I/You/We/They have not (haven’t) been eating pizza.
+He/She/It has not (hasn’t) been eating pizza.
+________________________________________
+Questions
+Have/Has + S + been + main verb + “-ing” + O?
+Examples:
+Have I/you/we/they been eating pizza?
+Has he/she/it been eating pizza?
+________________________________________
+Short Answers
+Yes, I/you/we/they have. / No, I/you/we/they haven’t.
+Yes, he/she/it has. / No, he/she/it hasn’t.
+
+________________________________________ Present Perfect Continuous Time expressions:
+•	for (two hours / a long time)
+•	since (Monday / 9 AM)
+•	all day / all morning / recently
+•	how long…?
+•	for (duration)
+•	since (when the action started)`,
+
+      "Past Simple": `
+(past facts, habits, routines; things that used to be true; or single, finished, completed actions in the past: say when!)
+
+Positive Statements
+S + past verb (V2) + O
+Examples:
+Regular verbs: I/You/We/They/He/She/It ordered pizza.
+Just add -ed: play → played, walk → walked
+Or drop the final -e and add -d: live → lived, love → loved
+Or double the final consonant (if the verb ends in consonant + vowel + consonant, and the last syllable is stressed): stop → stopped, plan → planned (BUT: open → opened — don’t double when the stress is not on the last syllable)
+Or change -y to -ied (after a consonant): carry → carried, study → studied (BUT: play → played — don’t change if there’s a vowel before the -y)
+Irregular verbs: I/You/We/They/He/She/It ate pizza.
+________________________________________
+Negative Statements
+S + did not (didn’t) + base verb + O
+Examples:
+Regular verbs: I/You/We/They/He/She/It did not (didn’t) order pizza.
+Irregular verbs: I/You/We/They/He/She/It did not (didn’t) eat pizza.
+________________________________________
+Questions
+Did + S + base verb + O?
+Examples:
+Regular verbs: Did I/you/we/they/he/she/it order pizza?
+Irregular verbs: Did I/you/we/they/he/she/it eat pizza?
+________________________________________
+Short Answers
+Yes, I/you/we/they/he/she/it did.
+No, I/you/we/they/he/she/it didn’t.
+________________________________________ Past Simple Time expressions:
+•	yesterday / last night / last week
+•	ago (e.g., two days ago)
+•	in 1990 / in the past
+•	when I was a child
+•	just now / earlier today`,
+
+      "Past Continuous": `
+(ongoing actions happening at the same time in the past, or for an ongoing action interrupted by a past simple action. Often used to start a story.)
+Positive Statements
+S + was/were + main verb + “-ing” + O
+Examples:
+I was eating pizza.
+You/We/They were eating pizza.
+He/She/It was eating pizza.
+________________________________________
+Negative Statements
+S + was/were + not + main verb + “-ing” + O
+Examples:
+I was not (wasn’t) eating pizza.
+You/We/They were not (weren’t) eating pizza.
+He/She/It was not (wasn’t) eating pizza.
+________________________________________
+Questions
+Was/Were + S + main verb + “-ing” + O?
+Examples:
+Was I eating pizza?
+Were you/we/they eating pizza?
+Was he/she/it eating pizza?
+________________________________________
+Short Answers
+Yes, I was. / No, I wasn’t.
+Yes, you/we/they were. / No, you/we/they weren’t.
+Yes, he/she/it was. / No, he/she/it wasn’t.
+
+________________________________________
+Past Continuous Time expressions:
+•	while / when / as
+•	at that moment
+•	all day yesterday / at 6 PM yesterday
+•	the whole evening`,
+
+      "Past Perfect": `
+(for something that happened before something else happened)
+Positive Statements
+S + had + past participle (V3) + O
+Examples:
+I/You/We/They/He/She/It had eaten pizza.
+________________________________________
+Negative Statements
+S + had not (hadn’t) + past participle + O
+Examples:
+I/You/We/They/He/She/It had not (hadn’t) eaten pizza.
+________________________________________
+Questions
+Had + S + past participle + O?
+Examples:
+Had I/you/we/they/he/she/it eaten pizza?
+________________________________________
+Short Answers
+Yes, I/you/we/they/he/she/it had.
+No, I/you/we/they/he/she/it hadn’t.
+
+________________________________________
+
+Past Perfect Time expressions:
+•	before / after
+•	by the time
+•	already / just
+•	when (used to show the order of events)
+•	for (duration)
+•	since (when the action started)`,
+
+      "Future Simple": `
+(Spontaneous decisions, promises, and predictions based on current information)
+Positive Statements
+S + will + base verb + O
+Examples:
+I/You/We/They/He/She/It will eat pizza.
+________________________________________
+Negative Statements
+S + will not (won’t) + base verb + O
+Examples:
+I/You/We/They/He/She/It will not (won’t) eat pizza.
+________________________________________
+Questions
+Will + S + base verb + O?
+Examples:
+Will I/you/we/they/he/she/it eat pizza?
+________________________________________
+Short Answers
+Yes, I/you/we/they/he/she/it will.
+No, I/you/we/they/he/she/it won’t.
+________________________________________
+Future Simple Time expressions:
+•	tomorrow / next week / soon
+•	in a few days / in the future
+•	later / eventually
+•	by next year / by 2030`,
+
+      " “Going to” for the Future": `
+(plans, intentions and predictions based on evidence)
+Positive Statements
+S + am/is/are + going to + base verb + O
+Examples:
+I am going to eat pizza.
+You/We/They are going to eat pizza.
+He/She/It is going to eat pizza.
+________________________________________
+Negative Statements
+S + am/is/are + not + going to + base verb + O
+Examples:
+I am not going to eat pizza.
+You/We/They are not (aren’t) going to eat pizza.
+He/She/It is not (isn’t) going to eat pizza.
+________________________________________
+Questions
+Am/Is/Are + S + going to + base verb + O?
+Examples:
+Am I going to eat pizza?
+Are you/we/they going to eat pizza?
+Is he/she/it going to eat pizza?
+________________________________________
+Short Answers
+Yes, I am. / No, I am not (I’m not).
+Yes, you/we/they are. / No, you/we/they aren’t.
+Yes, he/she/it is. / No, he/she/it isn’t.
+________________________________________“Going to” Time expressions:
+•	tomorrow / next week / soon
+•	in a few days / in the future
+•	later / eventually
+•	by next year / by 2030`,
+
+      "Modal Verbs": ` (will, can, must, should, may, might, shall)
+
+Will (future intention or certainty)
+Positive statement:
+I/You/We/They/He/She/It will eat pizza.
+Negative statement:
+I/You/We/They/He/She/It will not (won’t) eat pizza.
+Question:
+Will I/you/we/they/he/she/it eat pizza?
+Short answers:
+Yes, I/you/we/they/he/she/it will.
+No, I/you/we/they/he/she/it won’t.
+________________________________________
+Can (ability or permission)
+Positive statement:
+I/You/We/They/He/She/It can eat pizza.
+Negative statement:
+I/You/We/They/He/She/It cannot (can’t) eat pizza.
+Question:
+Can I/you/we/they/he/she/it eat pizza?
+Short answers:
+Yes, I/you/we/they/he/she/it can.
+No, I/you/we/they/he/she/it can’t.
+________________________________________
+Must (obligation or necessity)
+Positive statement:
+I/You/We/They/He/She/It must eat pizza.
+Negative statement:
+I/You/We/They/He/She/It must not (mustn’t) eat pizza.
+Question:
+Must I/you/we/they/he/she/it eat pizza?
+Short answers:
+Yes, I/you/we/they/he/she/it must.
+No, I/you/we/they/he/she/it mustn’t.
+________________________________________
+Should (advice or recommendation)
+Positive statement:
+I/You/We/They/He/She/It should eat pizza.
+Negative statement:
+I/You/We/They/He/She/It should not (shouldn’t) eat pizza.
+Question:
+Should I/you/we/they/he/she/it eat pizza?
+Short answers:
+Yes, I/you/we/they/he/she/it should.
+No, I/you/we/they/he/she/it shouldn’t.
+________________________________________
+May (permission or possibility)
+Positive statement:
+I/You/We/They/He/She/It may eat pizza.
+Negative statement:
+I/You/We/They/He/She/It may not eat pizza.
+Question:
+May I/you/we/they/he/she/it eat pizza?
+Short answers:
+Yes, I/you/we/they/he/she/it may.
+No, I/you/we/they/he/she/it may not.
+________________________________________
+Might (possibility, less certain than “may”)
+Positive statement:
+I/You/We/They/He/She/It might eat pizza.
+Negative statement:
+I/You/We/They/He/She/It might not eat pizza.
+Question:
+Might I/you/we/they/he/she/it eat pizza?
+Short answers:
+Yes, I/you/we/they/he/she/it might.
+No, I/you/we/they/he/she/it might not.
+________________________________________
+Have to (external obligation or necessity)
+Positive statement:
+I/You/We/They have to eat pizza.
+He/She/It has to eat pizza.
+Negative statement:
+I/You/We/They/He/She/It do not (don’t) have to eat pizza.
+Question:
+Do I/you/we/they/he/she/it have to eat pizza?
+________________________________________
+Note:
+•	“Have to” shows something is necessary or required by rules or circumstances.
+•	“Don’t have to” means something is not necessary, but not forbidden.
+________________________________________
+Must (obligation or necessity)
+Positive statement:
+I/You/We/They/He/She/It must eat pizza.
+Negative statement:
+I/You/We/They/He/She/It must not (mustn’t) eat pizza.
+Question:
+Must I/you/we/they/he/she/it eat pizza?
+Short answers:
+Yes, I/you/we/they/he/she/it must.
+No, I/you/we/they/he/she/it mustn’t.`,
+
+      "Conditionals": `
+
+Zero Conditional (always true)
+if + Present Simple, Present Simple
+(facts, truths, habits)
+Examples:
+If you heat pizza, it melts.
+If it rains, the pizza gets soggy.
+________________________________________
+First Conditional (real possibility)
+if + Present Simple, will + base verb
+(real future possibilities)
+Examples:
+If I eat pizza, I will be happy.
+If it rains, we will eat pizza inside.
+________________________________________
+Second Conditional (imaginary now/future)
+if + Past Simple, would + base verb
+(unreal or hypothetical present/future situations)
+Examples:
+If I ate pizza every day, I would be full.
+If I were you, I would order more pizza.
+________________________________________
+Third Conditional (imaginary past)
+if + Past Perfect, would have + past participle
+(unreal past situations and regrets)
+Examples:
+If I had eaten pizza, I would have been happy.
+If she had not burnt the pizza, we would have enjoyed it.`,
+
+      "Passive Voice": `
+(Focus on the action when we don’t know, don’t care, or don’t want to say who or what did it. Often used in formal and scientific writing, and news reports.)
+Note: You can reintroduce the doer as the agent or identify the means (method or tool).
+S + be (in correct tense) + past participle (V3) + (by O)
+Examples:
+The pizza is eaten by me. (Present Simple Passive)
+The pizza was eaten by them. (Past Simple Passive)`,
+
+      "WH- questions": `
+
+(when “yes” or “no” just isn’t good enough)
+WH- word + auxiliary + subject + main verb...?
+Examples:
+What do you eat for dinner?
+Where is the pizza?
+Who is eating the pizza?
+When did you eat pizza?
+Why are you eating pizza?`,
+
+      "Adjectives": `
+
+Adjectives are used to describe a noun by providing more information about its size, condition, feeling, or quality.
+
+Royal Order of Adjectives – The standard sequence: Determiner + Opinion/Quality, Size, Age, Shape, Color, Origin, Material, Type/Purpose + Noun.
+
+Opinion (Quality): good, bad, friendly
+Size: big, small, long, short, tall
+Age: young, old, new, ancient
+Shape: thick, thin, fat, slim
+Condition: wet, dry, clean, dirty
+Color: red, blue, green, yellow
+Origin: American, Japanese, French, Italian
+Material: wooden, metal, plastic, cotton
+Type/Purpose: racing, cooking, sleeping, hiking
+
+Example of all categories used at once:
+A good big old thick red Japanese wooden racing boat. `,
+
+      "Adjectives that describe temporary states of being, abilities, or needs": `, (These do not fit into the traditional Royal Order of Adjectives.)
+
+Feelings: happy, unhappy, sad, angry
+Difficulty: hard, easy
+Speed: fast, slow
+Needs or Physical States: hungry, thirsty, tired`,
+
+      "Intensifiers": `
+
+Intensifiers modify adjectives to increase or decrease their intensity. (Intensifier + Adjective)
+
+Weak: somewhat, fairly, pretty, rather
+Moderate: really, very, quite
+Strong: extremely
+Absolute: absolutely, completely, totally`,
+      "Phrasal Verbs Related to Communication": `
+Say hello/goodbye – Greet or bid farewell (She said hello to her neighbor.)
+Put off – Delay (They put off the meeting.)
+Put up with – Tolerate (I can't put up with this noise!)
+Put forward – Propose (He put forward a new idea.)
+Turn down – Reject or lower (She turned down the job offer./Turn down the music!)
+Turn up – Increase volume (He turned up the radio.)/Appear (He turned up late.)
+Turn out – Result in (The event turned out great.)
+Cut off – Interrupt or stop (She cut me off while I was speaking.)
+Get through to – Successfully communicate (I finally got through to him.) `,
+
+      "Phrasal Verbs Related to Work and Daily Activities": `
+Set up – Arrange or establish (They set up a new business.)
+Set off – Begin a journey (They set off early in the morning.)
+Break down – Stop working (My car broke down on the highway.)
+Break up – End a relationship (They broke up last year.)
+Break out – Start suddenly (A fight broke out at the concert.)
+Look for – Search (I'm looking for my keys.)
+Look after – Take care of (She looks after her grandmother.)
+Look into – Investigate (They are looking into the case.)
+Look forward to – Anticipate something with excitement (I'm looking forward to the trip.)
+Call off – Cancel (They called off the wedding.)
+Check out – Examine or leave a place (We checked out of the hotel.)
+Keep up – Maintain (Keep up the good work!)
+Keep away – Avoid (Keep away from the fire.)
+Turn away – Refuse entry (They were turned away at the door.)
+Get along – Have a good relationship (They get along well.)
+Run away – Escape (The dog ran away.)
+Bring back – Return (This song brings back memories.) `,
+
+      "Phrasal Verbs Related to Giving and Receiving": `
+Drop off – Deliver or let someone out of a vehicle (I dropped her off at school.)
+Pick up – Collect someone or something (I picked up my order from the store.)
+Give in to – Surrender or yield (She finally gave in to their demands.)
+Take back – Retract a statement (I take back what I said.)
+Give up – Stop doing something (He gave up smoking.)
+Give away – Donate (She gave away her old clothes.) `,
+
+      "Phrasal Verbs Part 2": ``,
+
+      "Phrasal Verbs Related to Possession and Holding": `
+Have out – Discuss or resolve a problem (They had it out over dinner.)
+Hold on – Wait or pause (Hold on a moment.)
+Hold up – Delay or obstruct (The traffic held us up.)/Support (The pillars hold up the roof.)
+Carry on – Continue doing something (They carried on despite the difficulties.)
+Carry out – Execute or fulfill a task (They carried out the project successfully.)
+Hold back – Restrain emotions or progress (She held back her tears.)
+Keep up with – Stay at the same speed (She couldn't keep up with the news.) `,
+
+      "Phrasal Verbs Related to Creation and Action": `
+Make up – Create (She made up a story.)/Compensate (He made up for being late.)
+Make out – Understand or discern (I couldn't make out what he was saying.)
+Build up – Develop or increase (They are trying to build up their business.)
+Come up with – Think of an idea (He came up with a solution.)
+Bring up – Mention a topic (She brought up an interesting idea in the meeting.)
+Do without – Manage without (We'll have to do without a car.)
+Use up – Exhaust or consume completely (They used up all the supplies.)
+Put together – Assemble (He put together the furniture.) `,
+
+      "Phrasal Verbs Related to Movement and Direction": `
+Go out – Leave or socialize (They went out for dinner.)
+Go over – Review (Let's go over the main points again.)
+Go through – Experience something difficult (She went through a tough time.)
+Come across – Find unexpectedly (I came across an old letter in my attic.)
+Come up with – Think of an idea (He came up with a new plan.)
+Come along – Accompany (Come along with us!) `,
+
+      "Phrasal Verbs Related to Movement and Transport": `
+Bring about – Cause something to happen (They brought about significant changes.)
+Bring in – Introduce or earn (The new policy brought in more customers.)
+Bring forward – Move to an earlier date (They brought the meeting forward.)
+Take off – Remove clothing (She took off her jacket.)
+Take in – Absorb or deceive (She took in all the details./He was taken in by the scam.)
+Take apart – Dismantle (He took the engine apart.)
+Take out – Remove (He took out his phone.)
+Run out – Use up completely (We ran out of milk.)
+Run into – Encounter someone unexpectedly (I ran into an old friend at the mall.) `,
+      "Adjectives": `
+
+Adjectives are used to describe a noun by providing more information about its size, condition, feeling, or quality.
+
+Royal Order of Adjectives – The standard sequence: Determiner + Opinion/Quality, Size, Age, Shape, Color, Origin, Material, Type/Purpose + Noun.
+
+Opinion (Quality): good, bad, friendly
+Size: big, small, long, short, tall
+Age: young, old, new, ancient
+Shape: thick, thin, fat, slim
+Condition: wet, dry, clean, dirty
+Color: red, blue, green, yellow
+Origin: American, Japanese, French, Italian
+Material: wooden, metal, plastic, cotton
+Type/Purpose: racing, cooking, sleeping, hiking
+
+Example of all categories used at once:
+A good big old thick red Japanese wooden racing boat. `,
+
+      "Adjectives that describe temporary states of being, abilities, or needs": `, (These do not fit into the traditional Royal Order of Adjectives.)
+
+Feelings: happy, unhappy, sad, angry
+Difficulty: hard, easy
+Speed: fast, slow
+Needs or Physical States: hungry, thirsty, tired`,
+
+      "Intensifiers": `
+
+Intensifiers modify adjectives to increase or decrease their intensity. (Intensifier + Adjective)
+
+Weak: somewhat, fairly, pretty, rather
+Moderate: really, very, quite
+Strong: extremely
+Absolute: absolutely, completely, totally`,
+
+      "Question Tags": `
+
+Used to confirm information or ask for agreement.
+
+S + V, (positive clause → negative tag / negative clause → positive tag)?
+If the main clause is positive, the tag is negative.
+If the main clause is negative, the tag is positive.
+Use the same auxiliary verb from the main clause.
+
+Positive Negative tag - You like coffee, don’t you?
+Negative Positive tag - She isn’t coming, is she?
+Future confirmation - They will be here soon, won’t they?
+Ability confirmation - He can swim, can’t he?
+Advice confirmation - We should leave now, shouldn’t we? `,
+
+      "Cause/Effect/Reason/Purpose/Result": `
+
+Use the following structures to show why something happens, what it leads to, or the purpose behind it.
+
+Prepositions
+These prepositions introduce phrases that express the reason or result of something:
+
+because of – caused by
+due to – caused by
+owing to – caused by
+as a result of – caused by
+for – shows purpose or intended result
+
+Adverbs
+These words signal outcomes, results, or logical consequences
+
+therefore – as a result
+thus – as a result
+consequently – as a result
+accordingly – as a result
+hence – for that reason
+as a result – as a result
+for this reason – because of this
+
+Conjunctions
+These conjunctions link clauses to show cause, result, or purpose:
+
+because – shows cause
+since – because
+if – conditional cause
+unless – if not
+so – shows result
+so that – shows purpose or intended result
+now that – because of the current situation
+
+Modal Verbs
+These modal verbs express possible, expected, or necessary outcomes:
+
+must – necessity or obligation
+should – expected, recommended
+might – possible result
+may – possible result`,
+      "Apparent Contrast/Contradiction/Opposition": `
+
+Prepositions
+
+despite – in contrast to
+in spite of – despite
+except – excluding
+instead of – in place of
+rather than – instead of
+
+Adverbs
+
+however – in contrast
+nevertheless – despite that
+nonetheless – in spite of that
+instead – in place of
+still – in contrast
+even so – despite that
+on the other hand – showing contrast
+by contrast – compared to
+
+Conjunctions
+
+but – contradiction
+yet – contrast
+although – despite
+though – despite
+even though – despite
+whereas – showing difference
+while – showing contrast
+even if – introduces contradiction despite condition
+
+Modal/Auxiliary Verbs
+
+might still – possibility in contrast
+could however – possibility in contrast
+would rather – preference in contrast`,
+
+      "Frequency": `
+Frequency involves how often something happens.
+
+Prepositions
+
+every day
+every week
+once in a while – occasionally
+from time to time – intermittently
+
+Adverbs
+
+always – at all times 100%
+usually – typically
+normally – generally
+often – frequently
+frequently – regularly
+regularly – at regular times
+periodically – at regular intervals
+sometimes – at times 50%
+occasionally – sometimes
+rarely – seldom
+seldom – infrequently
+hardly ever – rarely
+never – at no time 0%
+
+Conjunctions
+
+whenever – at any time
+if – conditional, introducing a time-related clause
+
+Modal/Auxiliary Verbs
+
+will often – frequent future action
+can sometimes – occasional ability
+may occasionally – sometimes a  possibility`,
+
+      "Degree/Intensity/Emphasis": `
+
+Degree, intensity or emphasis involves how strong or important something is.
+
+Adverbs
+
+very – extremely
+too – excessively
+extremely – highly
+slightly – a little
+almost – nearly`,
+
+      "Focus/Limitation": `
+
+Focus or limitation emphasizes a restriction regarding the context.
+
+Adverbs
+
+only – limits scope
+(e.g., She only studies at night.)
+just – indicates recent/minimal action (e.g., I just arrived.)
+even – emphasizes the unexpected (e.g., Even he agreed.)
+also – adds related information
+(e.g., She also speaks French.)
+mainly – indicates primary focus (e.g., They mainly focus on design.)
+mostly – indicates general tendency (e.g., It's mostly true.)
+particularly – highlights specificity (e.g., I'm particularly interested.)
+especially – for emphasis/importance (e.g., He is especially helpful.)
+solely – indicates exclusivity
+(e.g., I am solely responsible for the task.) `,
+
+      "Certainty/Probability/Possibility/Deduction": `
+
+How likely something is to happen
+
+Prepositions
+
+beyond doubt – certainly
+without question – certainly
+
+Adverbs
+
+definitely – with certainty
+certainly – without doubt
+probably – likely
+possibly – with a chance
+maybe – uncertain possibility
+likely – with confidence
+surely – with confidence
+undoubtedly – without question
+clearly – with certainty
+apparently – inferred
+presumably – assumed to be true
+
+Conjunctions
+
+if – hypothetical condition
+in case – if something happens
+unless – the situation stays the same as long as a certain thing either happens or doesn’t
+
+Modal/Auxiliary Verbs
+
+can – ability or possibility
+could – possibility
+may – possibility
+might – possibility
+should – obligation or expectation
+must – certainty or necessity
+will – future certainty
+would – hypothetical/conditional`,
+
+      "Deduction": `
+These modal verbs and expressions are used to express logical certainty, likelihood, assumptions, inferences or conclusions about something based on available evidence or reasoning.
+
+Present Deduction
+Subject + modal verb + base verb + object
+
+must, would, could, should, might
+
+Past Deduction
+Subject + modal verb (have + past participle) + object
+
+must have, would have, could have, should have, might have`,
+
+      "Obligation/Prohibition/Permission/Ability/Advice/Suggestions": `
+What has to, must, must not, can, cannot, should, or should not be done
+
+Prepositions
+
+under – as per a rule
+without – without permission
+
+Modal/Auxiliary Verbs
+
+must – necessity or obligation
+may – permission
+can – ability
+could – ability
+cannot – inability
+should – obligation or suggestion
+
+ADVICE/SUGGESTIONS
+Recommendations or guidance
+
+Modal/Auxiliary Verbs
+
+should – suggestion
+ought to – advice
+could – suggestion`,
+
+      "Comparison/Similarity/Difference": `
+
+Showing similarity or contrast
+
+Prepositions
+
+like – similar to
+as – in the same way as
+than – comparison
+similar to – like
+equal to – same as
+different from – not the same as
+in the same way as – similarly
+compared to – showing similarity or contrast
+in contrast to – comparison or opposition
+
+Adverbs
+
+similarly – in a like manner
+likewise – in a similar manner
+equally – to the same degree
+differently – in another way
+otherwise – in a different manner
+
+Conjunctions
+
+as...as – comparison
+just as...as – comparison
+than – used in comparisons
+whereas – comparison or contrast`,
+
+      "Manner": `
+
+How something is done or how it happens
+
+Adverbs
+
+quickly – fast
+slowly – at a slow speed
+carefully – with caution
+easily – with little effort
+well – proficiently
+badly – poorly
+clearly – with clarity
+happily – with happiness
+sadly – with sorrow
+angrily – with anger
+politely – with good manners
+rudely – in a disrespectful way
+
+Prepositions
+
+by – by a method or agent
+with – the tool or method used
+without – lacking the means
+via – through the medium
+through – using the means
+in – expresses method or manner (e.g., in silence)
+on – expressing method
+(e.g., on purpose)
+in a ... manner – in a certain way
+(a formal way to express manner) `,
+
+      "Direction/Movement": `
+
+Where something moves or is directed to
+
+Prepositions
+
+to – indicating movement toward
+from – indicating movement away from
+toward – heading in the direction of
+away from – in the opposite direction
+
+Adverbs
+
+up – in a higher direction
+down – in a lower direction
+forward – in the direction ahead
+back – returning to a previous position`,
+
+      "Place/Location": `
+
+Where something happens or is located
+
+Prepositions
+
+in – inside a place
+on – on a surface
+at – a specific point
+near – close to
+next to – beside
+between – in the middle of
+under – below
+above – over
+
+Adverbs
+
+here – in this location
+there – in that location
+everywhere – in all locations
+anywhere – in any location`,
+
+      "Adding Information and Ideas to Sentences": `
+
+Use the following structures to add detail, expand ideas, and connect clauses in writing and speech.
+
+Relative Conjunctions / Relative Adverbs
+To introduce dependent clauses that add information about a noun
+
+when – refers to time
+where – refers to place
+why – refers to reason
+
+Prepositions
+To introduce phrases that add or attach more information
+
+with – in addition to
+along with – together with
+as well as – in addition to
+plus – adding to
+in addition to – also`,
+
+      "Coordinating / Correlative Conjunctions": `
+To link equal or paired ideas
+
+and – connects two related ideas
+both...and… – pairs two related ideas
+not only...but also – for two related ideas
+
+Adverbs
+To add emphasis or reinforce related ideas
+
+also – in addition
+too – similarly
+again – repeating an event
+furthermore – additionally
+moreover – additionally
+in addition – furthermore
+besides – apart from
+what's more – moreover`,
+
+      "Yes/No Questions": ` are used to ask for yes or no information or confirmation. (Answered with "yes" or "no")
+
+Question: Auxiliary + Subject + Verb (+ Object)?
+Response: yes – for agreement, no – for disagreement
+
+Use "do" (for action verbs)
+
+Present simple action verbs use Do/Does + S + V (base form)? (Do you like…? Does he work…?).
+
+Past simple action verbs use Did + S + V (base form)? (Did you see…? Did she go…?).
+
+Do you like coffee? (Aux = Do, S = you, V = like, O = coffee)
+Does she play tennis? (Aux = Does, S = she, V = play, O = tennis)
+Did he play football today?
+
+Using "be" (for states or descriptions)
+
+Patterns of use: Be (am/is/are/was/were) + S (+ complement)? `,
+
+      "Wh-Questions": ` are used to ask for specific details about a person, place, time, reason, manner, or object.
+
+Who (Person) Who + V + (O/C)? Who called you?
+Whom (Person) Whom + Auxiliary V + S +V1? Whom did you call?
+What (Thing) What + V + (O/C)? What is your favorite food?
+Which (Choosing from options) Which + N + V + (O/C)? Which color do you like?
+Why (Reason) Why + Auxiliary V + S + V1? Why are you late?
+Where (Place) Where + Auxiliary V + S+ V1? Where do you live?
+When – (Time) When + Auxiliary V + S + V1? When is the meeting?
+
+How - Various uses How + Auxiliary V + S + V1?
+How does this work?
+How many (countable) How many books do you have?
+How much (uncountable) How much water do you drink?
+How long (duration) How long does it take?
+How often (frequency) How often do you exercise?
+How are you? (Condition)
+How do you make pizza? (Manner/Method)
+How does this work? (Explanation)
+How fast can you run? (Degree)
+How + adjectives - How tall is he? `,
+
+      // Add more tips here like:
+      // "Future Simple": "Your content here..."
+    };
+
+    const buttonsDiv = document.getElementById("buttons");
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+
+    for (const [title, content] of Object.entries(tips)) {
+      const btn = document.createElement("button");
+      btn.textContent = title;
+      btn.onclick = () => openModal(title, content);
+      buttonsDiv.appendChild(btn);
+    }
+
+    function openModal(title, content) {
+      modalTitle.textContent = title;
+
+      const formattedContent = content
+        .replace(/\n/g, "<br>");
+
+      modalText.innerHTML = formattedContent;
+      modal.style.display = "block";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+  </script>
+
+</body>
+</html>
