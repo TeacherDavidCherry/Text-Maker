@@ -240,6 +240,7 @@ button:hover {
 #auxSubject            { background-color: #ffffff; }
 #auxAdverbBeforeVerb   { background-color: #e6f9e6; }
 #auxVerb2              { background-color: #ffffff; }
+#auxAdverbAfterVerb    { background-color: #e6f9e6; }
 #auxObject             { background-color: #ffffff; }
 #auxSubjectComplement  { background-color: #ffffff; }
 #auxAdverb             { background-color: #e6f9e6; }
@@ -249,6 +250,7 @@ button:hover {
 #whSubject             { background-color: #ffffff; }
 #whAdverbBetweenSubjectVerb { background-color: #e6f9e6; }
 #whVerb                { background-color: #ffffff; }
+#whAdverbAfterVerb     { background-color: #e6f9e6; } 
 #whObject              { background-color: #ffffff; }
 #whSubjectComplement   { background-color: #ffffff; }
 #whAdverb              { background-color: #e6f9e6; }
@@ -281,15 +283,14 @@ button:hover {
 
 <div class="builder-section" aria-label="Sentence builder">
   <h2>Sentence:</h2>
-  <input id="adverb1" type="text" placeholder="adverb" />
-  <input id="subject" type="text" placeholder="subject" />
-  <input id="negation" type="text" placeholder="negation" />
-  <input id="adverbBetweenNegVerb" type="text" placeholder="adverb" />
-  <input id="verb" type="text" placeholder="verb" />
-  <input id="adverb2" type="text" placeholder="adverb" />
-  <input id="object" type="text" placeholder="object" />
-  <input id="subjectComplement" type="text" placeholder="subject complement" />
-  <input id="adverb3" type="text" placeholder="adverb" />
+  <input id="adverb1" type="text" placeholder="time/place" />
+  <input id="subject" type="text" placeholder="S" />
+  <input id="negation" type="text" placeholder="neg." />
+  <input id="adverbBetweenNegVerb" type="text" placeholder="frequency" />
+  <input id="verb" type="text" placeholder="V" />
+  <input id="adverb2" type="text" placeholder="manner" />
+  <input id="object" type="text" placeholder="O/SC" />
+  <input id="adverb3" type="text" placeholder="time/place" />
   <input id="punctuation" type="text" placeholder=".,!" maxlength="1" />
   <input id="joiner" type="text" placeholder="joiner" />
   <button id="buildBtn">Build on same line</button>
@@ -299,12 +300,12 @@ button:hover {
 <div class="builder-section" aria-label="Yes/No question builder">
   <h2>Yes/No Question:</h2>
   <input id="auxVerb" type="text" placeholder="be/do/can/have" />
-  <input id="auxSubject" type="text" placeholder="subject" />
-  <input id="auxAdverbBeforeVerb" type="text" placeholder="adverb" />
-  <input id="auxVerb2" type="text" placeholder="verb" />
-  <input id="auxObject" type="text" placeholder="object" />
-  <input id="auxSubjectComplement" type="text" placeholder="subject complement" />
-  <input id="auxAdverb" type="text" placeholder="adverb" />
+  <input id="auxSubject" type="text" placeholder="S" />
+  <input id="auxAdverbBeforeVerb" type="text" placeholder="frequency" />
+  <input id="auxVerb2" type="text" placeholder="V" />
+  <input type="text" id="auxAdverbAfterVerb" class="green-input" placeholder="manner" /> 
+  <input id="auxObject" type="text" placeholder="O/SC" />
+  <input id="auxAdverb" type="text" placeholder="time/place" />
   <input id="auxQM" type="text" placeholder="?" maxlength="1" style="width: 2ch; text-align:center;" />
   <button id="buildYesNoQuestionBtn">Build on same line</button>
   <button class="lineBreakBtn">Build on next line</button>
@@ -313,12 +314,12 @@ button:hover {
 <div class="builder-section" aria-label="Wh question builder">
   <h2>Wh- Question:</h2>
   <input id="whWord" type="text" placeholder="who/what/where/when/why/how" />
-  <input id="whSubject" type="text" placeholder="subject" />
-  <input id="whAdverbBetweenSubjectVerb" type="text" placeholder="adverb" />
-  <input id="whVerb" type="text" placeholder="verb" />
-  <input id="whObject" type="text" placeholder="object" />
-  <input id="whSubjectComplement" type="text" placeholder="subject complement" />
-  <input id="whAdverb" type="text" placeholder="adverb" />
+  <input id="whSubject" type="text" placeholder="S" />
+  <input id="whAdverbBetweenSubjectVerb" type="text" placeholder="frequency" />
+  <input id="whVerb" type="text" placeholder="V" />
+  <!-- Added field --> <input type="text" id="whAdverbAfterVerb" class="green-input" placeholder="manner" /> <!-- Added field -->
+  <input id="whObject" type="text" placeholder="O/SC" />
+  <input id="whAdverb" type="text" placeholder="time/place" />
   <input id="whQM" type="text" placeholder="?" maxlength="1" style="width: 2ch; text-align:center;" />
   <button id="buildWhQuestionBtn">Build on same line</button>
   <button class="lineBreakBtn">Build on next line</button>
@@ -692,7 +693,7 @@ for (const [title, content] of Object.entries(tips)) {
   });
 
   function buildYesNoQuestion(addLineBreak) {
-    const inputs = ['auxVerb', 'auxSubject', 'auxAdverbBeforeVerb', 'auxVerb2', 'auxObject', 'auxSubjectComplement', 'auxAdverb', 'auxQM'];
+    const inputs = ['auxVerb', 'auxSubject', 'auxAdverbBeforeVerb', 'auxVerb2', 'auxAdverbAfterVerb', 'auxObject', 'auxSubjectComplement', 'auxAdverb', 'auxQM'];
     const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
     appendToBuiltAll(joinParts(parts), addLineBreak);
     clearInputs(inputs);
@@ -702,7 +703,7 @@ for (const [title, content] of Object.entries(tips)) {
   document.querySelectorAll('.builder-section')[1].querySelector('.lineBreakBtn').addEventListener('click', () => buildYesNoQuestion(true));
 
   function buildWhQuestion(addLineBreak) {
-    const inputs = ['whWord', 'whSubject', 'whAdverbBetweenSubjectVerb', 'whVerb', 'whObject', 'whSubjectComplement', 'whAdverb', 'whQM'];
+    const inputs = ['whWord', 'whSubject', 'whAdverbBetweenSubjectVerb', 'whVerb', 'whAdverbAfterVerb', 'whObject', 'whSubjectComplement', 'whAdverb', 'whQM'];
     const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
     appendToBuiltAll(joinParts(parts), addLineBreak);
     clearInputs(inputs);
