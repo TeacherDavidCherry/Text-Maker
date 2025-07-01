@@ -396,21 +396,21 @@ button:hover {
   });
 
   document.getElementById('buildBtn').addEventListener('click', () => {
-    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'adverb3', 'punctuation', 'joiner'];
     const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
     appendToBuiltAll(joinParts(parts), false);
     clearInputs(inputs);
   });
 
   document.querySelectorAll('.builder-section')[0].querySelector('.lineBreakBtn').addEventListener('click', () => {
-    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'subjectComplement', 'adverb3', 'punctuation', 'joiner'];
+    const inputs = ['adverb1', 'subject', 'negation', 'adverbBetweenNegVerb', 'verb', 'adverb2', 'object', 'adverb3', 'punctuation', 'joiner'];
     const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
     appendToBuiltAll(joinParts(parts), true);
     clearInputs(inputs);
   });
 
   function buildYesNoQuestion(addLineBreak) {
-    const inputs = ['auxVerb', 'auxSubject', 'auxAdverbBeforeVerb', 'auxVerb2', 'auxAdverbAfterVerb', 'auxObject', 'auxSubjectComplement', 'auxAdverb', 'auxQM'];
+    const inputs = ['auxVerb', 'auxSubject', 'auxAdverbBeforeVerb', 'auxVerb2', 'auxAdverbAfterVerb', 'auxObject', 'auxAdverb', 'auxQM'];
     const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
     appendToBuiltAll(joinParts(parts), addLineBreak);
     clearInputs(inputs);
@@ -420,7 +420,7 @@ button:hover {
   document.querySelectorAll('.builder-section')[1].querySelector('.lineBreakBtn').addEventListener('click', () => buildYesNoQuestion(true));
 
   function buildWhQuestion(addLineBreak) {
-    const inputs = ['whWord', 'whSubject', 'whAdverbBetweenSubjectVerb', 'whVerb', 'whAdverbAfterVerb', 'whObject', 'whSubjectComplement', 'whAdverb', 'whQM'];
+    const inputs = ['whWord', 'whSubject', 'whAdverbBetweenSubjectVerb', 'whVerb', 'whAdverbAfterVerb', 'whObject', 'whAdverb', 'whQM'];
     const parts = inputs.map(id => document.getElementById(id).value.trim()).filter(Boolean);
     appendToBuiltAll(joinParts(parts), addLineBreak);
     clearInputs(inputs);
