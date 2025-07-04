@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventors and Their Videos</title>
+    <meta name="description" content="A list of famous inventors and their contributions, with video links for further exploration.">
+    <title>Inventors and Their Contributions</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,10 +16,10 @@
         h1 {
             color: #007bff;
         }
-        .inventor {
+        section {
             margin-bottom: 30px;
         }
-        .inventor h2 {
+        h2 {
             color: #343a40;
         }
         .video-list {
@@ -36,118 +37,126 @@
         .video-list a:hover {
             text-decoration: underline;
         }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            section {
+                margin-bottom: 20px;
+            }
+        }
     </style>
 </head>
 <body>
     <h1>Inventors and Their Contributions</h1>
     
-    <div class="inventor">
+    <section class="inventor">
         <h2>Elon Musk</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=-apCR8R2_8A" target="_blank">Elon Musk: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=8Hoe9by0wNc&t=74s" target="_blank">Elon Musk: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=-apCR8R2_8A" target="_blank" rel="noopener noreferrer" title="Elon Musk: A Journey Through SpaceX and Tesla">Elon Musk: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=8Hoe9by0wNc&t=74s" target="_blank" rel="noopener noreferrer" title="Elon Musk: The Vision Behind Tesla and SpaceX">Elon Musk: Video 2</a></li>
         </ul>
-    </div>
+    </section>
     
-    <div class="inventor">
+    <section class="inventor">
         <h2>Alfred Nobel</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=uZLK_J2NfX0" target="_blank">Alfred Nobel: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=G_dz26uscHY" target="_blank">Alfred Nobel: Video 2</a></li>
-            <li><a href="https://www.youtube.com/watch?v=RN7dNUg2Jow" target="_blank">Alfred Nobel: Video 3</a></li>
+            <li><a href="https://www.youtube.com/watch?v=uZLK_J2NfX0" target="_blank" rel="noopener noreferrer" title="Alfred Nobel: The Man Behind the Nobel Prizes">Alfred Nobel: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=G_dz26uscHY" target="_blank" rel="noopener noreferrer" title="Alfred Nobel: Life and Legacy">Alfred Nobel: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=RN7dNUg2Jow" target="_blank" rel="noopener noreferrer" title="Alfred Nobel and the Creation of Dynamite">Alfred Nobel: Video 3</a></li>
         </ul>
-    </div>
+    </section>
     
-    <div class="inventor">
+    <section class="inventor">
         <h2>Samuel Colt</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=IFaTp8IHH5E" target="_blank">Samuel Colt: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=h9BHMhCKQtY" target="_blank">Samuel Colt: Video 2</a></li>
-            <li><a href="https://www.youtube.com/watch?v=nH205UyBniA" target="_blank">Samuel Colt: Video 3</a></li>
+            <li><a href="https://www.youtube.com/watch?v=IFaTp8IHH5E" target="_blank" rel="noopener noreferrer" title="Samuel Colt: The Father of the Revolver">Samuel Colt: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=h9BHMhCKQtY" target="_blank" rel="noopener noreferrer" title="The Story of Samuel Colt and the Colt Revolver">Samuel Colt: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=nH205UyBniA" target="_blank" rel="noopener noreferrer" title="The Legacy of Samuel Colt">Samuel Colt: Video 3</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
+    <section class="inventor">
         <h2>Thomas Edison</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=CnkXrRVssLk" target="_blank">Thomas Edison: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=v7pVb0lBrB0" target="_blank">Thomas Edison: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=CnkXrRVssLk" target="_blank" rel="noopener noreferrer" title="Thomas Edison: The Lightbulb and His Inventions">Thomas Edison: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=v7pVb0lBrB0" target="_blank" rel="noopener noreferrer" title="The Life of Thomas Edison">Thomas Edison: Video 2</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
+    <section class="inventor">
         <h2>Wright Brothers</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=w1zDmlIGDWk" target="_blank">Wright Brothers: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=YDlk4Ky_ahs" target="_blank">Wright Brothers: Video 2</a></li>
-            <li><a href="https://www.youtube.com/watch?v=Qt3pry6cWJM" target="_blank">Wright Brothers: Video 3</a></li>
+            <li><a href="https://www.youtube.com/watch?v=w1zDmlIGDWk" target="_blank" rel="noopener noreferrer" title="The Wright Brothers and the First Flight">Wright Brothers: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=YDlk4Ky_ahs" target="_blank" rel="noopener noreferrer" title="The Wright Brothers: From Bicycle Mechanics to Aviation Pioneers">Wright Brothers: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=Qt3pry6cWJM" target="_blank" rel="noopener noreferrer" title="The Wright Brothers' Breakthrough in Flight">Wright Brothers: Video 3</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
+    <section class="inventor">
         <h2>Nikola Tesla</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=k6iUxgeLUiw" target="_blank">Nikola Tesla: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=cDxi6ozDwhc" target="_blank">Nikola Tesla: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=k6iUxgeLUiw" target="_blank" rel="noopener noreferrer" title="Nikola Tesla: Genius Behind the AC System">Nikola Tesla: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=cDxi6ozDwhc" target="_blank" rel="noopener noreferrer" title="Nikola Tesla: Visionary Inventor and Scientist">Nikola Tesla: Video 2</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
+    <section class="inventor">
         <h2>Alexander Graham Bell</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=JsRt5lBdBfE" target="_blank">Alexander Graham Bell: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=RrLlW9EUTn4" target="_blank">Alexander Graham Bell: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=JsRt5lBdBfE" target="_blank" rel="noopener noreferrer" title="Alexander Graham Bell: The Inventor of the Telephone">Alexander Graham Bell: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=RrLlW9EUTn4" target="_blank" rel="noopener noreferrer" title="The Life and Legacy of Alexander Graham Bell">Alexander Graham Bell: Video 2</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
+    <section class="inventor">
         <h2>Robert Goddard</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=2O61p2D_2AE" target="_blank">Robert Goddard: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=sGZZ2QHprHw" target="_blank">Robert Goddard: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=2O61p2D_2AE" target="_blank" rel="noopener noreferrer" title="Robert Goddard: Father of Modern Rocketry">Robert Goddard: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=sGZZ2QHprHw" target="_blank" rel="noopener noreferrer" title="The Achievements of Robert Goddard in Rocket Science">Robert Goddard: Video 2</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
+    <section class="inventor">
         <h2>John Logie Baird</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=8C4TNPu6AnU" target="_blank">John Logie Baird: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=kRDYd8paqjo" target="_blank">John Logie Baird: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=8C4TNPu6AnU" target="_blank" rel="noopener noreferrer" title="John Logie Baird: The Father of Television">John Logie Baird: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=kRDYd8paqjo" target="_blank" rel="noopener noreferrer" title="John Logie Baird: The History of Television">John Logie Baird: Video 2</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
+    <section class="inventor">
         <h2>Henry Ford</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=J9OgpHGxDbY" target="_blank">Henry Ford: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=4cU7PHYRURg" target="_blank">Henry Ford: Video 2</a></li>
-            <li><a href="https://www.youtube.com/watch?v=mMz7C7FCcKw" target="_blank">Henry Ford: Video 3</a></li>
+            <li><a href="https://www.youtube.com/watch?v=J9OgpHGxDbY" target="_blank" rel="noopener noreferrer" title="Henry Ford and the Revolution of the Automobile Industry">Henry Ford: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=4cU7PHYRURg" target="_blank" rel="noopener noreferrer" title="The Impact of Henry Ford on Manufacturing">Henry Ford: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=mMz7C7FCcKw" target="_blank" rel="noopener noreferrer" title="Henry Ford: The Man Who Changed the World">Henry Ford: Video 3</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
+    <section class="inventor">
         <h2>John Pemberton</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=jwCYxwkjw90" target="_blank">John Pemberton: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=BZ7mcB2Ud2U" target="_blank">John Pemberton: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=jwCYxwkjw90" target="_blank" rel="noopener noreferrer" title="John Pemberton: The Invention of Coca-Cola">John Pemberton: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=BZ7mcB2Ud2U" target="_blank" rel="noopener noreferrer" title="The Story of John Pemberton and Coca-Cola">John Pemberton: Video 2</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
-        <h2>Super Soaker Water Gun</h2>
+    <section class="inventor">
+        <h2>Lonnie Johnson (Super Soaker)</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=eBtJGsyrQjE" target="_blank">Super Soaker: Video 1</a></li>
-            <li><a href="https://www.youtube.com/watch?v=SYq6aKLuSk0" target="_blank">Super Soaker: Video 2</a></li>
-            <li><a href="https://www.youtube.com/watch?v=j7m1L16tQrQ" target="_blank">Super Soaker: Video 3</a></li>
+            <li><a href="https://www.youtube.com/watch?v=eBtJGsyrQjE" target="_blank" rel="noopener noreferrer" title="Lonnie Johnson: The Story Behind the Super Soaker">Super Soaker: Video 1</a></li>
+            <li><a href="https://www.youtube.com/watch?v=SYq6aKLuSk0" target="_blank" rel="noopener noreferrer" title="Lonnie Johnson's Super Soaker Revolution">Super Soaker: Video 2</a></li>
+            <li><a href="https://www.youtube.com/watch?v=j7m1L16tQrQ" target="_blank" rel="noopener noreferrer" title="Lonnie Johnson and the Super Soaker's Impact">Super Soaker: Video 3</a></li>
         </ul>
-    </div>
+    </section>
 
-    <div class="inventor">
+    <section class="inventor">
         <h2>History of Pepsi</h2>
         <ul class="video-list">
-            <li><a href="https://www.youtube.com/watch?v=J_IW72RktlM" target="_blank">History of Pepsi</a></li>
+            <li><a href="https://www.youtube.com/watch?v=J_IW72RktlM" target="_blank" rel="noopener noreferrer" title="The History of Pepsi: From Creation to Global Success">History of Pepsi: Video 1</a></li>
         </ul>
-    </div>
+    </section>
 
 </body>
 </html>
