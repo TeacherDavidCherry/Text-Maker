@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text-Maker</title>
+  <style>
+    /* General body styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #eef6fb;
+      width: 100%;
+    }
+
+    /* Flush left headline */
+    h1 {
+      font-size: 22px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    /* Styling for each builder section */
+    .builder-section {
+      margin-bottom: 20px;
+    }
+
+    .builder-section div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+
+    /* Reset input and button styling */
+    .builder-section div input,
+    .builder-section div button {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      box-sizing: border-box;
+      height: 36px;
+    }
+
+    /* Input field styling */
+    .builder-section div input {
+      border: 1px solid #ccc;
+      min-width: 100px;
+      max-width: 200px;
+    }
+
+    /* Button styling */
+    .builder-section div button {
+      background-color: #5a9bd8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .builder-section div button:hover {
+      background-color: #3c7cb3;
+    }
+
+    /* Styling for the rough draft area */
+    #builtAll {
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+      width: 50%;
+      min-height: 16px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: both;
+      white-space: pre-wrap;
+      margin-bottom: 10px;
+    }
+
+    /* Buttons for rough draft actions */
+    #copyBtn,
+    #txtDownloadBtn {
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+      padding: 8px 12px;
+      height: 36px;
+      background-color: #5a9bd8;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+
+    #copyBtn:hover,
+    #txtDownloadBtn:hover {
+      background-color: #3c7cb3;
+    }
+
+    /* Flyout button container */
+    .flyout-btn-container {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    /* Flyout button styling */
+    .flyout-btn {
+      padding: 8px 16px;
+      border: 1px solid #ccc;
+      background-color: #f4f7fa;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    /* Flyout list styling */
+    .flyout-list {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+      min-width: 100px;
+      padding: 0;
+    }
+
+    .flyout-list li {
+      padding: 8px;
+      cursor: pointer;
+      list-style-type: none; /* Remove bullet points */
+      text-align: left; /* Align the text to the left */
+    }
+
+    .flyout-list li:hover {
+      background-color: #e0f2ff;
+    }
+
+    .flyout-btn:hover .flyout-list {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Text-Maker</h1>
+
+  <!-- Flyout Buttons (Placed above the content) -->
+  <div class="flyout-btn-container">
+    <button class="flyout-btn">Nouns
+      <ul class="flyout-list">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+      </ul>
+    </button>
+    <button class="flyout-btn">Verbs
+      <ul class="flyout-list">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+      </ul>
+    </button>
+    <button class="flyout-btn">Adjectives
+      <ul class="flyout-list">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+      </ul>
+    </button>
+    <button class="flyout-btn">Adverbs
+      <ul class="flyout-list">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+      </ul>
+    </button>
+    <button class="flyout-btn">Time Expressions
+      <ul class="flyout-list">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+      </ul>
+    </button>
+    <button class="flyout-btn">WH Ideas
+      <ul class="flyout-list">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+      </ul>
+    </button>
+  </div>
+
+  <!-- Fields and buttons for building text (Unchanged) -->
+  <div class="builder-section">
+  <div id="fields1">
+      Info:<input id="field1" type="text" placeholder="Field 1" />
+      <input id="field2" type="text" placeholder="Field 2" />
+      <input id="field3" type="text" placeholder="Field 3" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+    <div id="fields2">
+      A (Y/N): <input id="field4" type="text" placeholder="Field 4" />
+      <input id="field5" type="text" placeholder="Field 5" />
+      <input id="field6" type="text" placeholder="Field 6" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+    <div id="fields3">
+      A (WH): <input id="field7" type="text" placeholder="Field 7" />
+      <input id="field8" type="text" placeholder="Field 8" />
+      <input id="field9" type="text" placeholder="Field 9" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+    <div id="fields4">
+      B (+):      <input id="field10" type="text" placeholder="Field 10" />
+      <input id="field11" type="text" placeholder="Field 11" />
+      <input id="field12" type="text" placeholder="Field 12" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+    <div id="fields5">
+      B (-): <input id="field13" type="text" placeholder="Field 13" />
+      <input id="field14" type="text" placeholder="Field 14" />
+      <input id="field15" type="text" placeholder="Field 15" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+    <div id="fields6">
+      B (Y/N): <input id="field16" type="text" placeholder="Field 16" />
+      <input id="field17" type="text" placeholder="Field 17" />
+      <input id="field18" type="text" placeholder="Field 18" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+    <div id="fields7">
+      B (WH): <input id="field19" type="text" placeholder="Field 19" />
+      <input id="field20" type="text" placeholder="Field 20" />
+      <input id="field21" type="text" placeholder="Field 21" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+    <div id="fields8">
+      A (+): <input id="field22" type="text" placeholder="Field 22" />
+      <input id="field23" type="text" placeholder="Field 23" />
+      <input id="field24" type="text" placeholder="Field 24" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+    <div id="fields9">
+      A (-): <input id="field25" type="text" placeholder="Field 25" />
+      <input id="field26" type="text" placeholder="Field 26" />
+      <input id="field27" type="text" placeholder="Field 27" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+    <div id="fields10">
+      <input id="field28" type="text" placeholder="Field 28" />
+      <input id="field29" type="text" placeholder="Field 29" />
+      <input id="field30" type="text" placeholder="Field 30" />
+      <button class="buildBtn">Add</button>
+      <button class="lineBreakBtn">Line Break</button>
+    </div>
+  </div>
+
+  <!-- Rough draft area -->
+  <div>
+    <textarea id="builtAll" placeholder="Rough Draft"></textarea>
+  </div>
+
+  <!-- Copy and Download buttons -->
+  <div>
+    <button id="copyBtn">Copy</button>
+    <button id="txtDownloadBtn">Download TXT</button>
+  </div>
+
+  <script>
+    // Same script as before for appending and clearing input
+    function appendToBuiltAll(text, addLineBreak) {
+      const built = document.getElementById('builtAll');
+      if (built.value) {
+        built.value += addLineBreak ? '\n' + text : (built.value.endsWith('\n') ? text : ' ' + text);
+      } else {
+        built.value = text;
+      }
+    }
+
+    // Function to clear inputs after appending text
+    function clearInputs(ids) {
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.value = '';
+        }
+      });
+    }
+
+    // General event listener for all "Add" buttons
+    document.querySelectorAll('.buildBtn').forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        const fields = document.querySelectorAll(`#fields${index + 1} input`);
+        const parts = Array.from(fields).map(field => field.value.trim()).filter(Boolean);
+        appendToBuiltAll(parts.join(' '), false);
+        clearInputs(Array.from(fields).map(field => field.id));
+      });
+    });
+
+    // General event listener for all "Line Break" buttons
+    document.querySelectorAll('.lineBreakBtn').forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        const fields = document.querySelectorAll(`#fields${index + 1} input`);
+        const parts = Array.from(fields).map(field => field.value.trim()).filter(Boolean);
+        appendToBuiltAll(parts.join(' '), true);
+        clearInputs(Array.from(fields).map(field => field.id));
+      });
+    });
+
+    // Copy to clipboard functionality
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const built = document.getElementById('builtAll');
+      navigator.clipboard.writeText(built.value)
+        .then(() => {
+          alert("Text copied to clipboard!");
+        })
+        .catch(err => {
+          alert("Failed to copy text.");
+          console.error(err);
+        });
+    });
+
+    // Download as .txt functionality
+    document.getElementById('txtDownloadBtn').addEventListener('click', () => {
+      const built = document.getElementById('builtAll').value;
+      const blob = new Blob([built], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'rough_draft.txt';
+      link.click();
+    });
+  </script>
+</body>
+</html>
