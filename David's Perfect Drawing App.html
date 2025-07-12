@@ -224,13 +224,13 @@
     }
 
     function switchTool(tool) {
+        currentTool = tool;
+        updateCursor();
         if (tool === 'stylus') {
             setStylusSize(7);
         } else if (tool === 'eraser') {
             setEraserSize(7);
         }
-        currentTool = tool;
-        updateCursor();
     }
 
     document.getElementById("stylusMedium").addEventListener("click", () => switchTool('stylus'));
@@ -318,16 +318,32 @@
         saveHistory(); // Save history after drawing
     }
 
-    // Touch events to avoid mobile scrolling
+    // Prevent default behavior for touch events to avoid page scrolling on mobile
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startDrawing(e);
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        draw(e);
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        stopDrawing();
+    });
+
+    canvas.addEventListener('touchcancel', (e) => {
+        e.preventDefault();
+        stopDrawing();
+    });
+
+    // Mouse events
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseout', stopDrawing);
-
-    canvas.addEventListener('touchstart', startDrawing, { passive: false });
-    canvas.addEventListener('touchmove', draw, { passive: false });
-    canvas.addEventListener('touchend', stopDrawing);
-    canvas.addEventListener('touchcancel', stopDrawing);
 
     document.getElementById("undoButton").addEventListener("click", undo);
     document.getElementById("redoButton").addEventListener("click", redo);
