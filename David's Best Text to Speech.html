@@ -116,6 +116,8 @@
             recognition.lang = 'en-US';
             recognition.continuous = true;  // Enable continuous listening
             recognition.interimResults = true;  // Allow interim results for faster feedback
+            recognition.maxAlternatives = 1;  // Limit alternatives to improve accuracy
+            recognition.start();  // Automatically start as soon as page loads
 
             const startBtn = document.getElementById('startBtn');
             const downloadBtn = document.getElementById('downloadBtn');
@@ -124,6 +126,10 @@
 
             // Start recognition automatically on button click
             startBtn.addEventListener('click', () => {
+                if (recognition.recognizing) {
+                    console.log("Already recognizing. Please wait.");
+                    return;
+                }
                 recognition.start();
                 startBtn.classList.add('active');
                 startBtn.disabled = true;
@@ -145,9 +151,16 @@
                 }
             };
 
+            // Restart recognition on error or when it ends
             recognition.onerror = (event) => {
                 console.error("Speech Recognition Error:", event.error);
                 output.textContent = `Error: ${event.error}`;
+                recognition.start();  // Restart the recognition on error
+            };
+
+            recognition.onend = () => {
+                console.log("Speech recognition ended. Restarting...");
+                recognition.start();  // Restart recognition when it ends unexpectedly
             };
 
             // Download functionality
