@@ -13,8 +13,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh; /* Full viewport height */
-            justify-content: flex-start; /* Start at the top */
+            height: 100vh;
+            justify-content: flex-start;
         }
 
         .content {
@@ -22,7 +22,7 @@
             flex-direction: column;
             justify-content: flex-start;
             width: 100%;
-            flex-grow: 1; /* Allow content to grow and push the buttons */
+            flex-grow: 1;
             gap: 10px;
         }
 
@@ -42,8 +42,8 @@
             background-color: #f0f0f0;
             border-radius: 5px;
             min-height: 40px;
-            width: 70%; /* Adjust width */
-            height: 60vh; /* Set height */
+            width: 70%;
+            height: 60vh;
             overflow-y: auto;
             white-space: pre-wrap;
             word-wrap: break-word;
@@ -51,33 +51,18 @@
             outline: none;
             text-align: left;
             position: relative;
-            flex-grow: 1; /* Make the text area flexible */
+            flex-grow: 1;
         }
 
-        .control-panel {
-            background-color: transparent;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 0 0px rgba(0, 0, 0, 0.2);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 7px;
-            width: 20px;
-            flex-shrink: 0; /* Prevent the control panel from shrinking */
-        }
-
-        /* Bottom buttons flush left */
         .btn-container {
             display: flex;
-            justify-content: flex-start; /* Align buttons to the left */
+            justify-content: flex-start;
             gap: 10px;
             margin-top: 10px;
             flex-wrap: wrap;
-            margin-bottom: 10px; /* Space at the bottom */
-            width: 100%; /* Full width for buttons */
-            padding-left: 20px; /* Add padding on the left to avoid touching the edge */
+            margin-bottom: 10px;
+            width: 100%;
+            padding-left: 20px;
         }
 
         button {
@@ -101,11 +86,10 @@
             background-color: red !important;
         }
 
-        /* Mobile styling */
         @media (max-width: 600px) {
             #output {
-                width: 100%; /* Full width on mobile */
-                height: 50vh; /* Make it a bit smaller for mobile */
+                width: 100%;
+                height: 50vh;
             }
         }
     </style>
@@ -116,7 +100,6 @@
             <div id="output" contenteditable="true"></div>
         </div>
 
-        <!-- Bottom buttons (only 'Start' and 'Download' left) -->
         <div class="btn-container">
             <button id="startBtn">Start</button>
             <button id="downloadBtn">Download</button>
@@ -131,17 +114,17 @@
         } else {
             const recognition = new SpeechRecognition();
             recognition.lang = 'en-US';
-            recognition.continuous = true; // Ensure continuous recognition
+            recognition.continuous = true;  // Enable continuous listening
             recognition.interimResults = true;  // Allow interim results for faster feedback
-            recognition.maxAlternatives = 1;  // Limit alternatives to improve accuracy
-            recognition.start(); // Start recognition immediately
+            recognition.maxAlternatives = 1;  // Limit alternatives for better accuracy
 
             const startBtn = document.getElementById('startBtn');
             const output = document.getElementById('output');
             const downloadBtn = document.getElementById('downloadBtn');
 
-            let lastTranscript = ""; // To store the last recognized text to avoid repetition
+            let lastTranscript = "";  // To store the last recognized text to avoid repetition
 
+            // Start recognition on button click
             startBtn.addEventListener('click', () => {
                 recognition.start();
                 startBtn.classList.add('active');
@@ -159,18 +142,8 @@
                 // Update the last transcript
                 lastTranscript = transcript;
 
-                // Append the processed transcript to the output area, adding space between each word
+                // Append the processed transcript to the output area
                 output.textContent += transcript + " ";  // Add a space after each new word
-            };
-
-            recognition.onstart = () => {
-                console.log("Voice recognition started.");
-            };
-
-            recognition.onend = () => {
-                console.log("Voice recognition has ended.");
-                // Restart recognition automatically to ensure continuous listening
-                recognition.start();
             };
 
             recognition.onerror = (event) => {
@@ -178,6 +151,7 @@
                 output.textContent = `Error: ${event.error}`;
             };
 
+            // Download button functionality
             downloadBtn.addEventListener('click', () => {
                 const textToDownload = output.textContent;
                 if (textToDownload && textToDownload !== "") {
