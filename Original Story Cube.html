@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Word Grid</title>
+    <style>
+        /* Customizable CSS Variables */
+        :root {
+            /* Base Colors */
+            --primary-bg-color: #4CAF50;        /* Primary background color */
+            --button-bg-color: #4CAF50;          /* Button background color */
+            --button-text-color: white;          /* Button text color */
+            --grid-border-color: #ddd;           /* Grid item border color */
+            --grid-item-font-size: 16px;         /* Font size for grid items */
+            --title-font-size: 24px;             /* Font size for title */
+            --title-color: #333;                 /* Title color */
+            --grid-item-text-color: #000;        /* Text color for grid items */
+            --grid-gap: 10px;                    /* Gap between grid items */
+            --grid-item-size: 100px;             /* Size of each grid item */
+            --generate-button-size: 16px;        /* Font size of the button */
+            --generate-button-padding: 10px 20px; /* Button padding */
+            
+            /* Hover Effects */
+            --button-hover-bg-color: #45a049;    /* Button hover background color */
+            --grid-item-hover-bg-color: #f0f0f0; /* Grid item hover background color */
+        }
+
+        /* Background color for the whole page - light grey stone */
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('https://www.transparenttextures.com/patterns/stonewall.png'), #dcdcdc;
+            font-family: Arial, sans-serif;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Darker grey container for the entire content (title, grid, and button) */
+        .game-container {
+            text-align: center;
+            background-color: #333333; /* Even darker grey background for the container */
+            border-radius: 8px; /* Rounded corners for container */
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Subtle shadow around the container */
+        }
+
+        /* Title with bold font */
+        h1 {
+            font-size: var(--title-font-size);
+            color: var(--title-color);
+            font-weight: bold; /* Make the title bold */
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, var(--grid-item-size));
+            grid-template-rows: repeat(3, var(--grid-item-size));
+            gap: var(--grid-gap);
+            margin-top: 20px;
+        }
+
+        /* Grid item style with bold text */
+        .grid-item {
+            width: var(--grid-item-size);
+            height: var(--grid-item-size);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--grid-item-font-size);
+            color: var(--grid-item-text-color);
+            border: 2px solid var(--grid-border-color); /* Increased border thickness */
+            border-radius: 8px; /* Slightly rounded corners */
+            background-color: #b0b0b0; /* Default darker grey tile background */
+            box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+            font-weight: bold; /* Make grid item text bold */
+        }
+
+        .grid-item:hover {
+            background-color: var(--grid-item-hover-bg-color); /* Light background on hover */
+            transform: scale(1.05); /* Slight scale on hover */
+            box-shadow: inset 2px 2px 10px rgba(0, 0, 0, 0.3), 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+        }
+
+        #generateButton {
+            margin-top: 20px;
+            padding: var(--generate-button-padding);
+            font-size: var(--generate-button-size);
+            cursor: pointer;
+            background-color: var(--button-bg-color);
+            color: var(--button-text-color);
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            font-weight: bold; /* Make button text bold */
+        }
+
+        #generateButton:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>Random Word Grid</h1>
+        <div class="grid-container">
+            <div class="grid-item" id="square1"></div>
+            <div class="grid-item" id="square2"></div>
+            <div class="grid-item" id="square3"></div>
+            <div class="grid-item" id="square4"></div>
+            <div class="grid-item" id="square5"></div>
+            <div class="grid-item" id="square6"></div>
+            <div class="grid-item" id="square7"></div>
+            <div class="grid-item" id="square8"></div>
+            <div class="grid-item" id="square9"></div>
+        </div>
+        <button id="generateButton">Generate Words</button>
+    </div>
+
+    <script>
+        // Define 9 columns of words (hidden initially)
+        const wordsColumn1 = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry', 'Fig', 'Grape', 'Honeydew', 'Kiwi'];
+        const wordsColumn2 = ['Lion', 'Tiger', 'Bear', 'Elephant', 'Giraffe', 'Zebra', 'Monkey', 'Kangaroo', 'Panda'];
+        const wordsColumn3 = ['Red', 'Blue', 'Green', 'Yellow', 'Orange', 'Purple', 'Pink', 'Black', 'White'];
+        const wordsColumn4 = ['Car', 'Bike', 'Train', 'Bus', 'Plane', 'Boat', 'Scooter', 'Tricycle', 'Submarine'];
+        const wordsColumn5 = ['Spring', 'Summer', 'Autumn', 'Winter', 'Monsoon', 'Dry', 'Wet', 'Foggy', 'Cloudy'];
+        const wordsColumn6 = ['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock', 'Stone', 'Brick', 'Tile', 'Granite'];
+        const wordsColumn7 = ['Cat', 'Dog', 'Fish', 'Bird', 'Rabbit', 'Hamster', 'Turtle', 'Snake', 'Horse'];
+        const wordsColumn8 = ['Coffee', 'Tea', 'Juice', 'Soda', 'Water', 'Wine', 'Beer', 'Whiskey', 'Lemonade'];
+        const wordsColumn9 = ['Sun', 'Moon', 'Stars', 'Cloud', 'Rain', 'Wind', 'Snow', 'Fog', 'Thunder'];
+
+        // Function to generate a random color
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Function to randomize and assign words to grid while changing background colors
+        function generateWords() {
+            // Get all grid item divs
+            const gridItems = document.querySelectorAll('.grid-item');
+            
+            gridItems.forEach((item, index) => {
+                // Randomize the background color on every button click
+                item.style.backgroundColor = getRandomColor();
+
+                let wordList;
+
+                // Assign the appropriate column based on square index
+                if (index === 0) wordList = wordsColumn1;  // Square 1 -> Column 1
+                else if (index === 1) wordList = wordsColumn2;  // Square 2 -> Column 2
+                else if (index === 2) wordList = wordsColumn3;  // Square 3 -> Column 3
+                else if (index === 3) wordList = wordsColumn4;  // Square 4 -> Column 4
+                else if (index === 4) wordList = wordsColumn5;  // Square 5 -> Column 5
+                else if (index === 5) wordList = wordsColumn6;  // Square 6 -> Column 6
+                else if (index === 6) wordList = wordsColumn7;  // Square 7 -> Column 7
+                else if (index === 7) wordList = wordsColumn8;  // Square 8 -> Column 8
+                else if (index === 8) wordList = wordsColumn9;  // Square 9 -> Column 9
+
+                // Pick a random word from the selected column
+                const randomWord = wordList[Math.floor(Math.random() * wordList.length)];
+
+                // Display the word in the grid item
+                item.textContent = randomWord;
+            });
+        }
+
+        // Event listener for the button
+        document.getElementById('generateButton').addEventListener('click', generateWords);
+    </script>
+
+</body>
+</html>
