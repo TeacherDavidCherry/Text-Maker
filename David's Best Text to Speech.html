@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice-to-Text with Start and Pause</title>
+    <title>Voice-to-Text</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -99,11 +99,6 @@
         <div class="container">
             <div id="output" contenteditable="true"></div>
         </div>
-
-        <div class="btn-container">
-            <button id="startBtn">Start</button>
-            <button id="downloadBtn">Download</button>
-        </div>
     </div>
 
     <script>
@@ -116,31 +111,16 @@
             recognition.lang = 'en-US';
             recognition.continuous = true;  // Enable continuous listening
             recognition.interimResults = true;  // Allow interim results for faster feedback
-            recognition.maxAlternatives = 1;  // Limit alternatives for better accuracy
 
-            const startBtn = document.getElementById('startBtn');
             const output = document.getElementById('output');
-            const downloadBtn = document.getElementById('downloadBtn');
 
-            let lastTranscript = "";  // To store the last recognized text to avoid repetition
-
-            // Start recognition on button click
-            startBtn.addEventListener('click', () => {
-                recognition.start();
-                startBtn.classList.add('active');
-                startBtn.disabled = true;
-                console.log("Voice recognition started...");
-            });
+            // Start recognition automatically
+            recognition.start();
 
             // When a result is recognized
             recognition.onresult = (event) => {
+                // Get the latest transcript from the event
                 let transcript = event.results[event.results.length - 1][0].transcript.trim();
-
-                // Prevent repeating the last recognized text
-                if (transcript === lastTranscript) return;
-
-                // Update the last transcript
-                lastTranscript = transcript;
 
                 // Append the processed transcript to the output area
                 output.textContent += transcript + " ";  // Add a space after each new word
@@ -150,20 +130,6 @@
                 console.error("Speech Recognition Error:", event.error);
                 output.textContent = `Error: ${event.error}`;
             };
-
-            // Download button functionality
-            downloadBtn.addEventListener('click', () => {
-                const textToDownload = output.textContent;
-                if (textToDownload && textToDownload !== "") {
-                    const blob = new Blob([textToDownload], { type: 'text/plain' });
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = 'output.txt';
-                    link.click();
-                } else {
-                    alert("Nothing to download!");
-                }
-            });
         }
     </script>
 </body>
