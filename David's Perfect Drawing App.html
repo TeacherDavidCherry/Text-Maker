@@ -158,11 +158,7 @@
     ctx.strokeStyle = stylusColor;
 
     function updateCursor() {
-        if (currentTool === 'eraser') {
-            canvas.style.cursor = 'url(eraser-cursor.svg), auto';
-        } else {
-            canvas.style.cursor = 'url(stylus-cursor.svg), auto';
-        }
+        // No cursor handling needed for mobile, we can ignore this for touch.
     }
 
     function setStylusSize(size) {
@@ -244,136 +240,51 @@
             
             const whiteSwatch = document.createElement('div');
             whiteSwatch.classList.add('color-swatch', 'white-swatch');
-            whiteSwatch.setAttribute('data-color', '#ffffff');
+            whiteSwatch.onclick = () => setColor('#ffffff');
             palette.appendChild(whiteSwatch);
-
+            
             colors.forEach(color => {
                 const swatch = document.createElement('div');
                 swatch.classList.add('color-swatch');
                 swatch.style.backgroundColor = color;
-                swatch.setAttribute('data-color', color);
+                swatch.onclick = () => setColor(color);
                 palette.appendChild(swatch);
             });
-
             palette.style.display = 'flex';
         } else {
             palette.style.display = 'none';
         }
     });
 
-    document.getElementById("colorPalette").addEventListener("click", (e) => {
-        if (e.target.classList.contains('color-swatch')) {
-            setColor(e.target.getAttribute('data-color'));
-            document.getElementById("colorPalette").style.display = 'none';
-        }
-    });
+    // Touch Event Handlers for Mobile
+    let lastTouch = { x: 0, y: 0 };
 
-    function startDrawing(e) {
+    canvas.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // Prevent scrolling on touch
         drawing = true;
-        ctx.beginPath();
-        const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX || e.touches[0].clientX) - rect.left;
-        const y = (e.clientY || e.touches[0].clientY) - rect.top;
-        ctx.moveTo(x, y);
-    }
+        lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    });
 
-    let lastX = 0, lastY = 0;
-    let minDistance = 5;
-
-    function draw(e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX || e.touches[0].clientX) - rect.left;
-        const y = (e.clientY || e.touches[0].clientY) - rect.top;
-
-        // Only draw if moved a minimum distance
-        const dx = x - lastX;
-        const dy = y - lastY;
-        if (Math.sqrt(dx * dx + dy * dy) < minDistance) {
-            return; // Skip drawing if distance is too small
-        }
-
+    canvas.addEventListener("touchmove", (e) => {
+        e.preventDefault();
         if (drawing) {
-            if (currentTool === 'eraser') {
-                ctx.clearRect(x - eraserSize / 2, y - eraserSize / 2, eraserSize, eraserSize);
-            } else if (currentTool === 'stylus') {
-                ctx.lineWidth = stylusSize;
-                ctx.globalAlpha = 0.7;
-                ctx.lineTo(x, y);
-                ctx.stroke();
-                ctx.globalAlpha = 1;
-            }
+            const currentTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            drawLine(lastTouch, currentTouch);
+            lastTouch = currentTouch;
         }
+    });
 
-        lastX = x;
-        lastY = y;
-
-        // Call requestAnimationFrame for smooth continuous drawing
-        if (drawing) {
-            requestAnimationFrame(() => draw(e));
-        }
-    }
-
-    function stopDrawing() {
+    canvas.addEventListener("touchend", () => {
         drawing = false;
-        saveHistory(); // Save history after drawing
+        saveHistory();
+    });
+
+    function drawLine(from, to) {
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        ctx.stroke();
     }
-
-    // Touch events to avoid mobile scrolling
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', stopDrawing);
-
-    canvas.addEventListener('touchstart', startDrawing, { passive: false });
-    canvas.addEventListener('touchmove', draw, { passive: false });
-    canvas.addEventListener('touchend', stopDrawing);
-    canvas.addEventListener('touchcancel', stopDrawing);
-
-    document.getElementById("undoButton").addEventListener("click", undo);
-    document.getElementById("redoButton").addEventListener("click", redo);
-
-    // Show the download options popup
-    document.getElementById("downloadButton").addEventListener("click", () => {
-        document.getElementById("downloadModal").style.display = 'block';
-    });
-
-    // Handle JPG download with white background
-    document.getElementById("downloadJPG").addEventListener("click", () => {
-        const bgCanvas = document.createElement("canvas");
-        const bgCtx = bgCanvas.getContext("2d");
-        bgCanvas.width = canvas.width;
-        bgCanvas.height = canvas.height;
-
-        bgCtx.fillStyle = '#ffffff';
-        bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-
-        bgCtx.drawImage(canvas, 0, 0);
-
-        const dataURL = bgCanvas.toDataURL("image/jpeg", 1.0);
-        const link = document.createElement("a");
-        link.href = dataURL;
-        link.download = "drawing.jpg";
-        link.click();
-        document.getElementById("downloadModal").style.display = 'none';
-    });
-
-    // Handle PNG download (with transparency)
-    document.getElementById("downloadPNG").addEventListener("click", () => {
-        const dataURL = canvas.toDataURL("image/png");
-        const link = document.createElement("a");
-        link.href = dataURL;
-        link.download = "drawing.png";
-        link.click();
-        document.getElementById("downloadModal").style.display = 'none';
-    });
-
-    // Close modal when clicking outside of it
-    document.body.addEventListener("click", (e) => {
-        const modal = document.getElementById("downloadModal");
-        if (!modal.contains(e.target) && e.target !== document.getElementById("downloadButton")) {
-            modal.style.display = 'none';
-        }
-    });
 </script>
 
 </body>
