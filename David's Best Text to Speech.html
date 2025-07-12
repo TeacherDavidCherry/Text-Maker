@@ -115,18 +115,20 @@
         } else {
             const recognition = new SpeechRecognition();
             recognition.lang = 'en-US';
-            recognition.continuous = true;  // Enable continuous listening
-            recognition.interimResults = true;  // Allow interim results for faster feedback
-            recognition.maxAlternatives = 1;  // Limit alternatives to improve accuracy
-            recognition.start();  // Automatically start as soon as page loads
+            recognition.continuous = true;  // Continuous listening
+            recognition.interimResults = false;  // Only final results (no partial words)
+            recognition.maxAlternatives = 1;  // Limit alternatives to 1 for better accuracy
+
+            let lastTranscript = "";  // To track last word
+
+            recognition.start();  // Start the microphone when the page loads
 
             const startBtn = document.getElementById('startBtn');
             const copyBtn = document.getElementById('copyBtn');
             const downloadBtn = document.getElementById('downloadBtn');
             const output = document.getElementById('output');
-            let lastTranscript = "";  // To store the last recognized text to avoid repetition
 
-            // Start recognition automatically on button click
+            // Start recognition on button click
             startBtn.addEventListener('click', () => {
                 if (recognition.recognizing) {
                     console.log("Already recognizing. Please wait.");
@@ -140,17 +142,17 @@
 
             // When a result is recognized
             recognition.onresult = (event) => {
-                // Get the latest transcript from the event
+                // Get the final recognized word
                 let transcript = event.results[event.results.length - 1][0].transcript.trim();
 
-                // Only append the final result (not interim)
+                // Only append the final word to the output
                 if (event.results[event.results.length - 1].isFinal) {
-                    // Check if the new transcript is different from the last one
+                    console.log('Recognized word:', transcript);
+
+                    // Ensure we don't repeat the same word
                     if (transcript !== lastTranscript) {
-                        lastTranscript = transcript;  // Update last transcript
-                        output.textContent += transcript + " ";  // Add a space after each new word
-                    } else {
-                        console.log("Duplicate result detected, skipping.");
+                        lastTranscript = transcript;
+                        output.textContent += transcript + " ";  // Add to the output
                     }
                 }
             };
@@ -163,8 +165,8 @@
             };
 
             recognition.onend = () => {
-                console.log("Speech recognition ended. Restarting...");
-                recognition.start();  // Restart recognition when it ends unexpectedly
+                console.log("Speech recognition ended.");
+                recognition.start();  // Restart recognition automatically
             };
 
             // Copy functionality
