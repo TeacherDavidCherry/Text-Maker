@@ -28,7 +28,7 @@
         .controls {
             display: grid;
             grid-template-columns: repeat(3, 1fr); /* 3 buttons per row */
-            grid-template-rows: repeat(4, auto);  /* 4 rows */
+            grid-template-rows: repeat(2, auto);  /* 2 rows */
             gap: 10px;
             width: 100%;
             max-width: 400px;
@@ -113,20 +113,12 @@
 <canvas id="drawingCanvas"></canvas>
 
 <div class="controls">
-    <button id="stylusSmall" data-size="5">Small Stylus</button>
-    <button id="stylusMedium" data-size="7">Medium Stylus</button>
-    <button id="stylusLarge" data-size="12">Large Stylus</button>
-    
-    <button id="eraserSmall" data-size="5">Small Eraser</button>
-    <button id="eraserMedium" data-size="7">Medium Eraser</button>
-    <button id="eraserLarge" data-size="12">Large Eraser</button>
-    
+    <button id="stylusMedium" data-size="7">Stylus</button>
     <button id="colorButton">Colors</button>
+    <button id="eraserMedium" data-size="7">Eraser</button>
+    
     <button id="undoButton">Undo</button>
     <button id="redoButton">Redo</button>
-    
-    <button id="clearButton">Clear Canvas</button>
-    <button id="copyButton">Copy</button>
     <button id="downloadButton">Download</button>
 </div>
 
@@ -146,8 +138,8 @@
 
     let drawing = false;
     let currentTool = 'stylus';
-    let stylusSize = 5;
-    let eraserSize = 5;
+    let stylusSize = 7;
+    let eraserSize = 7;
     let stylusColor = '#000000';
 
     let history = []; // Store drawing history
@@ -231,34 +223,14 @@
         historyIndex = -1;
     }
 
-    document.getElementById("stylusSmall").addEventListener("click", () => {
-        setStylusSize(5);
-        currentTool = 'stylus';
-        updateCursor();
-    });
     document.getElementById("stylusMedium").addEventListener("click", () => {
         setStylusSize(7);
         currentTool = 'stylus';
         updateCursor();
     });
-    document.getElementById("stylusLarge").addEventListener("click", () => {
-        setStylusSize(12);
-        currentTool = 'stylus';
-        updateCursor();
-    });
 
-    document.getElementById("eraserSmall").addEventListener("click", () => {
-        setEraserSize(5);
-        currentTool = 'eraser';
-        updateCursor();
-    });
     document.getElementById("eraserMedium").addEventListener("click", () => {
         setEraserSize(7);
-        currentTool = 'eraser';
-        updateCursor();
-    });
-    document.getElementById("eraserLarge").addEventListener("click", () => {
-        setEraserSize(12);
         currentTool = 'eraser';
         updateCursor();
     });
@@ -340,19 +312,6 @@
 
     document.getElementById("undoButton").addEventListener("click", undo);
     document.getElementById("redoButton").addEventListener("click", redo);
-    document.getElementById("clearButton").addEventListener("click", clearCanvas);
-
-    // Copy functionality
-    document.getElementById("copyButton").addEventListener("click", () => {
-        canvas.toBlob(function(blob) {
-            const item = new ClipboardItem({ "image/png": blob });
-            navigator.clipboard.write([item]).then(() => {
-                alert("Drawing copied to clipboard!");
-            }).catch(err => {
-                alert("Failed to copy the drawing.");
-            });
-        });
-    });
 
     // Show the download options popup
     document.getElementById("downloadButton").addEventListener("click", () => {
