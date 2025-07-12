@@ -177,6 +177,10 @@
     function setColor(color) {
         stylusColor = color;
         ctx.strokeStyle = color;
+
+        // Close the palette after a color is selected
+        const palette = document.getElementById("colorPalette");
+        palette.style.display = 'none';
     }
 
     // Save canvas state to history for undo/redo
