@@ -125,8 +125,10 @@
     <button id="redoButton">Redo</button>
     
     <button id="clearButton">Clear Canvas</button>
-    <button id="copyButton">Copy</button>
     <button id="downloadButton">Download</button>
+    
+    <!-- Updated this button to 'LINE' -->
+    <button id="shareButton">LINE</button>
 </div>
 
 <div id="colorPalette" class="color-palette">
@@ -310,16 +312,12 @@
     document.getElementById("redoButton").addEventListener("click", redo);
     document.getElementById("clearButton").addEventListener("click", clearCanvas);
 
-    // Copy functionality
-    document.getElementById("copyButton").addEventListener("click", () => {
-        canvas.toBlob(function(blob) {
-            const item = new ClipboardItem({ "image/png": blob });
-            navigator.clipboard.write([item]).then(() => {
-                alert("Drawing copied to clipboard!");
-            }).catch(err => {
-                alert("Failed to copy the drawing.");
-            });
-        });
+    // Share to LINE functionality
+    document.getElementById("shareButton").addEventListener("click", () => {
+        const dataURL = canvas.toDataURL();
+        const link = document.createElement("a");
+        link.href = `line://msg/text/${encodeURIComponent(dataURL)}`;
+        link.click();
     });
 
     // Show the download options popup
