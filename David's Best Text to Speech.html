@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-to-Text with Start and Pause</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.9em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            justify-content: flex-start; /* Start at the top */
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            width: 100%;
+            flex-grow: 1; /* Allow content to grow and push the buttons */
+            gap: 10px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+            gap: 10px;
+            position: relative;
+        }
+
+        #output {
+            font-size: 0.9em;
+            color: #333;
+            padding: 8px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            min-height: 40px;
+            width: 70%; /* Adjust width */
+            height: 60vh; /* Set height */
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: 2px solid #ccc;
+            outline: none;
+            text-align: left;
+            position: relative;
+            flex-grow: 1; /* Make the text area flexible */
+        }
+
+        .control-panel {
+            background-color: transparent;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0 0px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 7px;
+            width: 20px;
+            flex-shrink: 0; /* Prevent the control panel from shrinking */
+        }
+
+        /* Bottom buttons flush left */
+        .btn-container {
+            display: flex;
+            justify-content: flex-start; /* Align buttons to the left */
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px; /* Space at the bottom */
+            width: 100%; /* Full width for buttons */
+            padding-left: 20px; /* Add padding on the left to avoid touching the edge */
+        }
+
+        button {
+            padding: 5px 10px;
+            font-size: 0.8em;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin: 5px;
+            width: auto;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .active {
+            background-color: red !important;
+        }
+
+        /* Mobile styling */
+        @media (max-width: 600px) {
+            #output {
+                width: 100%; /* Full width on mobile */
+                height: 50vh; /* Make it a bit smaller for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="container">
+            <div id="output" contenteditable="true"></div>
+            <!-- Control Panel (buttons) will now be on the right of the text area -->
+            <div class="control-panel">
+                <button id="fullStopBtn">.</button>
+                <button id="commaBtn">,</button>
+                <button id="questionBtn">?</button>
+                <button id="exclamationBtn">!</button>
+                <button id="semicolonBtn">;</button>
+                <button id="colonBtn">:</button>
+                <button id="quoteBtn">"</button>
+                <button id="paragraphReturnBtn">↵</button>
+            </div>
+        </div>
+
+        <!-- Bottom buttons that will only move down when needed, now aligned to the left -->
+        <div class="btn-container">
+            <button id="startBtn">Start</button>
+            <button id="pauseBtn" disabled>Pause</button>
+            <button id="clearBtn">Clear</button>
+            <button id="copyBtn">Copy</button>
+            <button id="downloadBtn">Download</button>
+        </div>
+    </div>
+
+    <script>
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+            alert("Your browser does not support Speech Recognition.");
+        } else {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = true;
+            recognition.interimResults = false;
+
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const output = document.getElementById('output');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            const punctuationMap = {
+                "full stop": ".",
+                "comma": ",",
+                "question mark": "?",
+                "exclamation mark": "!",
+                "semicolon": ";",
+                "colon": ":",
+                "quote": '"',
+                "paragraph return": "\n",
+            };
+
+            let isPaused = false;
+            let isSentenceEnd = false;
+            let lastTranscript = ""; // To store last recognized text to avoid repetition
+
+            startBtn.addEventListener('click', () => {
+                recognition.start();
+                startBtn.classList.add('active');
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                console.log("Voice recognition started...");
+            });
+
+            pauseBtn.addEventListener('click', () => {
+                if (isPaused) {
+                    // Resume processing of speech recognition results
+                    pauseBtn.textContent = 'Pause';
+                    isPaused = false;
+                    console.log("Voice recognition resumed...");
+                } else {
+                    // Pause processing of speech recognition results
+                    pauseBtn.textContent = 'Resume';
+                    isPaused = true;
+                    console.log("Voice recognition paused...");
+                }
+            });
+
+            recognition.onresult = (event) => {
+                if (isPaused) return; // Skip processing when paused
+
+                let transcript = event.results[event.results.length - 1][0].transcript.trim();
+
+                // Prevent repeating the last recognized text
+                if (transcript === lastTranscript) return;
+
+                // Update the last transcript
+                lastTranscript = transcript;
+
+                // Process punctuation
+                Object.keys(punctuationMap).forEach(punctuation => {
+                    const regex = new RegExp(`\\b${punctuation}\\b`, 'gi');
+                    transcript = transcript.replace(regex, punctuationMap[punctuation]);
+                });
+
+                // Fix spacing around punctuation
+                transcript = transcript.replace(/\s+([.,!?;:])/g, "$1");
+
+                const sentenceEndings = [".", "!", "?"];
+                const nonSentenceEndings = [",", ";", ":"];
+
+                const lastChar = transcript.charAt(transcript.length - 1);
+                if (sentenceEndings.includes(lastChar)) {
+                    if (transcript.charAt(transcript.length - 1) !== " ") {
+                        transcript += " ";
+                    }
+                    isSentenceEnd = true;
+                } else if (nonSentenceEndings.includes(lastChar)) {
+                    if (transcript.charAt(transcript.length - 1) !== " ") {
+                        transcript += " ";
+                    }
+                }
+
+                if (isSentenceEnd) {
+                    transcript = transcript.charAt(0).toUpperCase() + transcript.slice(1);
+                    isSentenceEnd = false;
+                }
+
+                // Append the processed transcript to the output area
+                output.textContent += transcript;
+            };
+
+            recognition.onend = () => {
+                console.log("Voice recognition has ended.");
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech Recognition Error:", event.error);
+                output.textContent = `Error: ${event.error}`;
+            };
+
+            clearBtn.addEventListener('click', () => {
+                output.textContent = "";
+                startBtn.classList.remove('active');
+            });
+
+            copyBtn.addEventListener('click', () => {
+                const textToCopy = output.textContent;
+                if (textToCopy && textToCopy !== "") {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        alert("Text copied to clipboard!");
+                    }).catch((error) => {
+                        alert("Failed to copy text: " + error);
+                    });
+                } else {
+                    alert("Nothing to copy!");
+                }
+            });
+
+            downloadBtn.addEventListener('click', () => {
+                const textToDownload = output.textContent;
+                if (textToDownload && textToDownload !== "") {
+                    const blob = new Blob([textToDownload], { type: 'text/plain' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'output.txt';
+                    link.click();
+                } else {
+                    alert("Nothing to download!");
+                }
+            });
+
+            document.getElementById('fullStopBtn').addEventListener('click', () => {
+                output.textContent += ".";
+            });
+            document.getElementById('commaBtn').addEventListener('click', () => {
+                output.textContent += ",";
+            });
+            document.getElementById('questionBtn').addEventListener('click', () => {
+                output.textContent += "?";
+            });
+            document.getElementById('exclamationBtn').addEventListener('click', () => {
+                output.textContent += "!";
+            });
+            document.getElementById('semicolonBtn').addEventListener('click', () => {
+                output.textContent += ";";
+            });
+            document.getElementById('colonBtn').addEventListener('click', () => {
+                output.textContent += ":";
+            });
+            document.getElementById('quoteBtn').addEventListener('click', () => {
+                output.textContent += '"';
+            });
+            document.getElementById('paragraphReturnBtn').addEventListener('click', () => {
+                output.textContent += "\n"; 
+            });
+        }
+    </script>
+</body>
+</html>
