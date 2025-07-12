@@ -223,17 +223,18 @@
         historyIndex = -1;
     }
 
-    document.getElementById("stylusMedium").addEventListener("click", () => {
-        setStylusSize(7);
-        currentTool = 'stylus';
+    function switchTool(tool) {
+        currentTool = tool;
         updateCursor();
-    });
+        if (tool === 'stylus') {
+            setStylusSize(7);
+        } else if (tool === 'eraser') {
+            setEraserSize(7);
+        }
+    }
 
-    document.getElementById("eraserMedium").addEventListener("click", () => {
-        setEraserSize(7);
-        currentTool = 'eraser';
-        updateCursor();
-    });
+    document.getElementById("stylusMedium").addEventListener("click", () => switchTool('stylus'));
+    document.getElementById("eraserMedium").addEventListener("click", () => switchTool('eraser'));
 
     document.getElementById("colorButton").addEventListener("click", () => {
         const palette = document.getElementById("colorPalette");
