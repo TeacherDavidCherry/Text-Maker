@@ -99,6 +99,11 @@
         <div class="container">
             <div id="output" contenteditable="true"></div>
         </div>
+
+        <div class="btn-container">
+            <button id="startBtn">Start</button>
+            <button id="downloadBtn">Download</button>
+        </div>
     </div>
 
     <script>
@@ -112,24 +117,52 @@
             recognition.continuous = true;  // Enable continuous listening
             recognition.interimResults = true;  // Allow interim results for faster feedback
 
+            const startBtn = document.getElementById('startBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
             const output = document.getElementById('output');
+            let lastTranscript = "";  // To store the last recognized text to avoid repetition
 
-            // Start recognition automatically
-            recognition.start();
+            // Start recognition automatically on button click
+            startBtn.addEventListener('click', () => {
+                recognition.start();
+                startBtn.classList.add('active');
+                startBtn.disabled = true;
+                console.log("Voice recognition started...");
+            });
 
             // When a result is recognized
             recognition.onresult = (event) => {
                 // Get the latest transcript from the event
                 let transcript = event.results[event.results.length - 1][0].transcript.trim();
 
-                // Append the processed transcript to the output area
-                output.textContent += transcript + " ";  // Add a space after each new word
+                // Only append the final result (not interim)
+                if (event.results[event.results.length - 1].isFinal) {
+                    // Prevent repetition of the last recognized text
+                    if (transcript !== lastTranscript) {
+                        lastTranscript = transcript;  // Update last transcript
+                        output.textContent += transcript + " ";  // Add a space after each new word
+                    }
+                }
             };
 
             recognition.onerror = (event) => {
                 console.error("Speech Recognition Error:", event.error);
                 output.textContent = `Error: ${event.error}`;
             };
+
+            // Download functionality
+            downloadBtn.addEventListener('click', () => {
+                const textToDownload = output.textContent;
+                if (textToDownload && textToDownload !== "") {
+                    const blob = new Blob([textToDownload], { type: 'text/plain' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'output.txt'; // Name of the file being downloaded
+                    link.click();
+                } else {
+                    alert("Nothing to download!");
+                }
+            });
         }
     </script>
 </body>
