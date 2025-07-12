@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawing App</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            position: relative;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 buttons per row */
+            grid-template-rows: repeat(4, auto);  /* 4 rows */
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 10px;
+            z-index: 10;
+            position: absolute;
+            top: 10px;
+        }
+
+        .controls button {
+            padding: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #333;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .controls button:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .controls button:active {
+            background-color: #d0d0d0;
+            transform: translateY(0);
+        }
+
+        .color-palette {
+            display: none;
+            flex-wrap: nowrap;
+            gap: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            position: absolute;
+            z-index: 10;
+            overflow-x: auto;
+        }
+
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .color-swatch.white-swatch {
+            border: 1px solid lightgrey; /* Thin light grey border */
+            background-color: white; /* White color */
+        }
+
+        /* Modal Style */
+        #downloadModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+            text-align: center;
+        }
+
+        #downloadModal button {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="drawingCanvas"></canvas>
+
+<div class="controls">
+    <button id="stylusSmall" data-size="5">Small Stylus</button>
+    <button id="stylusMedium" data-size="7">Medium Stylus</button>
+    <button id="stylusLarge" data-size="12">Large Stylus</button>
+    
+    <button id="eraserSmall" data-size="5">Small Eraser</button>
+    <button id="eraserMedium" data-size="7">Medium Eraser</button>
+    <button id="eraserLarge" data-size="12">Large Eraser</button>
+    
+    <button id="colorButton">Colors</button>
+    <button id="undoButton">Undo</button>
+    <button id="redoButton">Redo</button>
+    
+    <button id="clearButton">Clear Canvas</button>
+    <button id="copyButton">Copy</button>
+    <button id="downloadButton">Download</button>
+</div>
+
+<div id="colorPalette" class="color-palette">
+    <!-- Dynamically populated swatches will go here -->
+</div>
+
+<!-- Modal for Download options -->
+<div id="downloadModal">
+    <button id="downloadJPG">Download JPG</button>
+    <button id="downloadPNG">Download Transparent PNG</button>
+</div>
+
+<script>
+    const canvas = document.getElementById("drawingCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let drawing = false;
+    let currentTool = 'stylus';
+    let stylusSize = 5;
+    let eraserSize = 5;
+    let stylusColor = '#000000';
+
+    let history = []; // Store drawing history
+    let historyIndex = -1; // To track the current position in history
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = stylusColor;
+
+    function updateCursor() {
+        if (currentTool === 'eraser') {
+            canvas.style.cursor = 'url(eraser-cursor.svg), auto';
+        } else {
+            canvas.style.cursor = 'url(stylus-cursor.svg), auto';
+        }
+    }
+
+    function setStylusSize(size) {
+        stylusSize = size;
+        currentTool = 'stylus';
+        updateCursor();
+    }
+
+    function setEraserSize(size) {
+        eraserSize = size;
+        currentTool = 'eraser';
+        updateCursor();
+    }
+
+    function setColor(color) {
+        stylusColor = color;
+        ctx.strokeStyle = color;
+    }
+
+    // Save canvas state to history for undo/redo
+    function saveHistory() {
+        history = history.slice(0, historyIndex + 1); // Remove forward history if we are in the middle
+        history.push(canvas.toDataURL());
+        historyIndex++;
+    }
+
+    // Undo functionality
+    function undo() {
+        if (historyIndex > 0) {
+            historyIndex--;
+            const img = new Image();
+            img.src = history[historyIndex];
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas first
+                ctx.drawImage(img, 0, 0);  // Draw the previous state
+            };
+        }
+    }
+
+    // Redo functionality
+    function redo() {
+        if (historyIndex < history.length - 1) {
+            historyIndex++;
+            const img = new Image();
+            img.src = history[historyIndex];
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas first
+                ctx.drawImage(img, 0, 0);  // Draw the next state
+            };
+        }
+    }
+
+    // Clear canvas functionality
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        history = [];
+        historyIndex = -1;
+    }
+
+    document.getElementById("stylusSmall").addEventListener("click", () => setStylusSize(5));
+    document.getElementById("stylusMedium").addEventListener("click", () => setStylusSize(7));
+    document.getElementById("stylusLarge").addEventListener("click", () => setStylusSize(12));
+
+    document.getElementById("eraserSmall").addEventListener("click", () => setEraserSize(5));
+    document.getElementById("eraserMedium").addEventListener("click", () => setEraserSize(7));
+    document.getElementById("eraserLarge").addEventListener("click", () => setEraserSize(12));
+
+    document.getElementById("colorButton").addEventListener("click", () => {
+        const palette = document.getElementById("colorPalette");
+        if (palette.style.display === 'none' || !palette.style.display) {
+            const colors = ["#f7c6d7", "#b7d8d6", "#d3e5c5", "#e3b0c7", "#b1d7ed", "#f5d0a9", "#f0a6c1", "#b0b8c1", "#e1d0f1"];
+            palette.innerHTML = '';
+            
+            const whiteSwatch = document.createElement('div');
+            whiteSwatch.classList.add('color-swatch', 'white-swatch');
+            whiteSwatch.setAttribute('data-color', '#ffffff');
+            palette.appendChild(whiteSwatch);
+
+            colors.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.classList.add('color-swatch');
+                swatch.style.backgroundColor = color;
+                swatch.setAttribute('data-color', color);
+                palette.appendChild(swatch);
+            });
+
+            palette.style.display = 'flex';
+        } else {
+            palette.style.display = 'none';
+        }
+    });
+
+    document.getElementById("colorPalette").addEventListener("click", (e) => {
+        if (e.target.classList.contains('color-swatch')) {
+            setColor(e.target.getAttribute('data-color'));
+            document.getElementById("colorPalette").style.display = 'none';
+        }
+    });
+
+    function startDrawing(e) {
+        drawing = true;
+        ctx.beginPath();
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        ctx.moveTo(x, y);
+    }
+
+    function draw(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+        if (drawing) {
+            if (currentTool === 'eraser') {
+                ctx.clearRect(x - eraserSize / 2, y - eraserSize / 2, eraserSize, eraserSize);
+            } else if (currentTool === 'stylus') {
+                ctx.lineWidth = stylusSize;
+                ctx.globalAlpha = 0.7;
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+        }
+    }
+
+    function stopDrawing() {
+        drawing = false;
+        saveHistory(); // Save history after drawing
+    }
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('touchcancel', stopDrawing);
+
+    document.getElementById("undoButton").addEventListener("click", undo);
+    document.getElementById("redoButton").addEventListener("click", redo);
+    document.getElementById("clearButton").addEventListener("click", clearCanvas);
+
+    // Copy functionality
+    document.getElementById("copyButton").addEventListener("click", () => {
+        canvas.toBlob(function(blob) {
+            const item = new ClipboardItem({ "image/png": blob });
+            navigator.clipboard.write([item]).then(() => {
+                alert("Drawing copied to clipboard!");
+            }).catch(err => {
+                alert("Failed to copy the drawing.");
+            });
+        });
+    });
+
+    // Show the download options popup
+    document.getElementById("downloadButton").addEventListener("click", () => {
+        document.getElementById("downloadModal").style.display = 'block';
+    });
+
+    // Handle JPG download with white background
+    document.getElementById("downloadJPG").addEventListener("click", () => {
+        const bgCanvas = document.createElement("canvas");
+        const bgCtx = bgCanvas.getContext("2d");
+        bgCanvas.width = canvas.width;
+        bgCanvas.height = canvas.height;
+
+        bgCtx.fillStyle = '#ffffff';
+        bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+        bgCtx.drawImage(canvas, 0, 0);
+
+        const dataURL = bgCanvas.toDataURL("image/jpeg", 1.0);
+        const link = document.createElement("a");
+        link.href = dataURL;
+        link.download = "drawing.jpg";
+        link.click();
+        document.getElementById("downloadModal").style.display = 'none';
+    });
+
+    // Handle PNG download (with transparency)
+    document.getElementById("downloadPNG").addEventListener("click", () => {
+        const dataURL = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = dataURL;
+        link.download = "drawing.png";
+        link.click();
+        document.getElementById("downloadModal").style.display = 'none';
+    });
+
+    // Close modal when clicking outside of it
+    document.body.addEventListener("click", (e) => {
+        const modal = document.getElementById("downloadModal");
+        if (!modal.contains(e.target) && e.target !== document.getElementById("downloadButton")) {
+            modal.style.display = 'none';
+        }
+    });
+
+</script>
+
+</body>
+</html>
