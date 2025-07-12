@@ -15,6 +15,7 @@
             padding: 0;
             background-color: #f0f0f0;
             position: relative;
+            overflow: hidden; /* Prevent scrolling */
         }
 
         canvas {
@@ -125,10 +126,8 @@
     <button id="redoButton">Redo</button>
     
     <button id="clearButton">Clear Canvas</button>
+    <button id="copyButton">Copy</button>
     <button id="downloadButton">Download</button>
-    
-    <!-- Updated this button to 'LINE' -->
-    <button id="shareButton">LINE</button>
 </div>
 
 <div id="colorPalette" class="color-palette">
@@ -154,8 +153,13 @@
     let history = []; // Store drawing history
     let historyIndex = -1; // To track the current position in history
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Set canvas size dynamically on resize
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas(); // Set initial size
+    window.addEventListener('resize', resizeCanvas); // Resize canvas when window size changes
 
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
@@ -188,7 +192,7 @@
 
     // Save canvas state to history for undo/redo
     function saveHistory() {
-        history = history.slice(0, historyIndex + 1); // Remove forward history if we are in the middle
+        history = history.slice(0, historyIndex + 1); // Remove forward history if we're in the middle
         history.push(canvas.toDataURL());
         historyIndex++;
     }
@@ -298,13 +302,14 @@
         saveHistory(); // Save history after drawing
     }
 
+    // Touch events to avoid mobile scrolling
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseout', stopDrawing);
 
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('touchstart', startDrawing, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
     canvas.addEventListener('touchend', stopDrawing);
     canvas.addEventListener('touchcancel', stopDrawing);
 
@@ -312,12 +317,16 @@
     document.getElementById("redoButton").addEventListener("click", redo);
     document.getElementById("clearButton").addEventListener("click", clearCanvas);
 
-    // Share to LINE functionality
-    document.getElementById("shareButton").addEventListener("click", () => {
-        const dataURL = canvas.toDataURL();
-        const link = document.createElement("a");
-        link.href = `line://msg/text/${encodeURIComponent(dataURL)}`;
-        link.click();
+    // Copy functionality
+    document.getElementById("copyButton").addEventListener("click", () => {
+        canvas.toBlob(function(blob) {
+            const item = new ClipboardItem({ "image/png": blob });
+            navigator.clipboard.write([item]).then(() => {
+                alert("Drawing copied to clipboard!");
+            }).catch(err => {
+                alert("Failed to copy the drawing.");
+            });
+        });
     });
 
     // Show the download options popup
@@ -362,7 +371,6 @@
             modal.style.display = 'none';
         }
     });
-
 </script>
 
 </body>
