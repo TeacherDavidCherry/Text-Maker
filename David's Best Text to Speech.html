@@ -131,15 +131,16 @@
         } else {
             const recognition = new SpeechRecognition();
             recognition.lang = 'en-US';
-            recognition.continuous = true;
-            recognition.interimResults = false;
+            recognition.continuous = true; // Ensure continuous recognition
+            recognition.interimResults = true;  // Allow interim results for faster feedback
+            recognition.maxAlternatives = 1;  // Limit alternatives to improve accuracy
+            recognition.start(); // Start recognition immediately
 
             const startBtn = document.getElementById('startBtn');
             const output = document.getElementById('output');
             const downloadBtn = document.getElementById('downloadBtn');
 
-            let isPaused = false;
-            let lastTranscript = ""; // To store last recognized text to avoid repetition
+            let lastTranscript = ""; // To store the last recognized text to avoid repetition
 
             startBtn.addEventListener('click', () => {
                 recognition.start();
@@ -148,9 +149,8 @@
                 console.log("Voice recognition started...");
             });
 
+            // When a result is recognized
             recognition.onresult = (event) => {
-                if (isPaused) return; // Skip processing when paused
-
                 let transcript = event.results[event.results.length - 1][0].transcript.trim();
 
                 // Prevent repeating the last recognized text
@@ -163,8 +163,14 @@
                 output.textContent += transcript + " ";  // Add a space after each new word
             };
 
+            recognition.onstart = () => {
+                console.log("Voice recognition started.");
+            };
+
             recognition.onend = () => {
                 console.log("Voice recognition has ended.");
+                // Restart recognition automatically to ensure continuous listening
+                recognition.start();
             };
 
             recognition.onerror = (event) => {
