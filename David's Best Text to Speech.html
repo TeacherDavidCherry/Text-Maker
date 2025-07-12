@@ -159,8 +159,8 @@
                 // Update the last transcript
                 lastTranscript = transcript;
 
-                // Append the processed transcript to the output area
-                output.textContent += transcript;
+                // Append the processed transcript to the output area, adding space between each word
+                output.textContent += transcript + " ";  // Add a space after each new word
             };
 
             recognition.onend = () => {
