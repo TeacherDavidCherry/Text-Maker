@@ -174,15 +174,16 @@
     }
 
     function setStylusSize(size) {
-        stylusSize = size;
-        currentTool = 'stylus';
-        updateCursor();
+        if (currentTool === 'stylus') {
+            stylusSize = size;
+            ctx.lineWidth = stylusSize;
+        }
     }
 
     function setEraserSize(size) {
-        eraserSize = size;
-        currentTool = 'eraser';
-        updateCursor();
+        if (currentTool === 'eraser') {
+            eraserSize = size;
+        }
     }
 
     function setColor(color) {
@@ -230,13 +231,37 @@
         historyIndex = -1;
     }
 
-    document.getElementById("stylusSmall").addEventListener("click", () => setStylusSize(5));
-    document.getElementById("stylusMedium").addEventListener("click", () => setStylusSize(7));
-    document.getElementById("stylusLarge").addEventListener("click", () => setStylusSize(12));
+    document.getElementById("stylusSmall").addEventListener("click", () => {
+        setStylusSize(5);
+        currentTool = 'stylus';
+        updateCursor();
+    });
+    document.getElementById("stylusMedium").addEventListener("click", () => {
+        setStylusSize(7);
+        currentTool = 'stylus';
+        updateCursor();
+    });
+    document.getElementById("stylusLarge").addEventListener("click", () => {
+        setStylusSize(12);
+        currentTool = 'stylus';
+        updateCursor();
+    });
 
-    document.getElementById("eraserSmall").addEventListener("click", () => setEraserSize(5));
-    document.getElementById("eraserMedium").addEventListener("click", () => setEraserSize(7));
-    document.getElementById("eraserLarge").addEventListener("click", () => setEraserSize(12));
+    document.getElementById("eraserSmall").addEventListener("click", () => {
+        setEraserSize(5);
+        currentTool = 'eraser';
+        updateCursor();
+    });
+    document.getElementById("eraserMedium").addEventListener("click", () => {
+        setEraserSize(7);
+        currentTool = 'eraser';
+        updateCursor();
+    });
+    document.getElementById("eraserLarge").addEventListener("click", () => {
+        setEraserSize(12);
+        currentTool = 'eraser';
+        updateCursor();
+    });
 
     document.getElementById("colorButton").addEventListener("click", () => {
         const palette = document.getElementById("colorPalette");
