@@ -102,6 +102,7 @@
 
         <div class="btn-container">
             <button id="startBtn">Start</button>
+            <button id="copyBtn">Copy</button>
             <button id="downloadBtn">Download</button>
         </div>
     </div>
@@ -120,6 +121,7 @@
             recognition.start();  // Automatically start as soon as page loads
 
             const startBtn = document.getElementById('startBtn');
+            const copyBtn = document.getElementById('copyBtn');
             const downloadBtn = document.getElementById('downloadBtn');
             const output = document.getElementById('output');
             let lastTranscript = "";  // To store the last recognized text to avoid repetition
@@ -143,10 +145,12 @@
 
                 // Only append the final result (not interim)
                 if (event.results[event.results.length - 1].isFinal) {
-                    // Prevent repetition of the last recognized text
+                    // Check if the new transcript is different from the last one
                     if (transcript !== lastTranscript) {
                         lastTranscript = transcript;  // Update last transcript
                         output.textContent += transcript + " ";  // Add a space after each new word
+                    } else {
+                        console.log("Duplicate result detected, skipping.");
                     }
                 }
             };
@@ -162,6 +166,22 @@
                 console.log("Speech recognition ended. Restarting...");
                 recognition.start();  // Restart recognition when it ends unexpectedly
             };
+
+            // Copy functionality
+            copyBtn.addEventListener('click', () => {
+                const textToCopy = output.textContent;
+                if (textToCopy && textToCopy !== "") {
+                    navigator.clipboard.writeText(textToCopy)
+                        .then(() => {
+                            alert("Text copied to clipboard!");
+                        })
+                        .catch(err => {
+                            console.error("Failed to copy text: ", err);
+                        });
+                } else {
+                    alert("Nothing to copy!");
+                }
+            });
 
             // Download functionality
             downloadBtn.addEventListener('click', () => {
