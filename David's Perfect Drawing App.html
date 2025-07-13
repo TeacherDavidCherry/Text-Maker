@@ -15,7 +15,7 @@
             padding: 0;
             background-color: #f0f0f0;
             position: relative;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden;
         }
 
         canvas {
@@ -27,8 +27,8 @@
 
         .controls {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 buttons per row */
-            grid-template-rows: repeat(2, auto);  /* 2 rows */
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, auto);
             gap: 10px;
             width: 100%;
             max-width: 400px;
@@ -84,11 +84,10 @@
         }
 
         .color-swatch.white-swatch {
-            border: 1px solid lightgrey; /* Thin light grey border */
-            background-color: white; /* White color */
+            border: 1px solid lightgrey;
+            background-color: white;
         }
 
-        /* Modal Style */
         #downloadModal {
             display: none;
             position: fixed;
@@ -116,17 +115,13 @@
     <button id="stylusMedium" data-size="7">Stylus</button>
     <button id="colorButton">Colors</button>
     <button id="eraserMedium" data-size="7">Eraser</button>
-    
     <button id="undoButton">Undo</button>
     <button id="redoButton">Redo</button>
     <button id="downloadButton">Download</button>
 </div>
 
-<div id="colorPalette" class="color-palette">
-    <!-- Dynamically populated swatches will go here -->
-</div>
+<div id="colorPalette" class="color-palette"></div>
 
-<!-- Modal for Download options -->
 <div id="downloadModal">
     <button id="downloadJPG">Download JPG</button>
     <button id="downloadPNG">Download Transparent PNG</button>
@@ -142,16 +137,15 @@
     let eraserSize = 7;
     let stylusColor = '#000000';
 
-    let history = []; // Store drawing history
-    let historyIndex = -1; // To track the current position in history
+    let history = [];
+    let historyIndex = -1;
 
-    // Set canvas size dynamically on resize
     function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
-    resizeCanvas(); // Set initial size
-    window.addEventListener('resize', resizeCanvas); // Resize canvas when window size changes
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
@@ -181,42 +175,40 @@
     function setColor(color) {
         stylusColor = color;
         ctx.strokeStyle = color;
+        ctx.lineCap = 'round';      // Ensure rounded ends
+        ctx.lineJoin = 'round';
     }
 
-    // Save canvas state to history for undo/redo
     function saveHistory() {
-        history = history.slice(0, historyIndex + 1); // Remove forward history if we're in the middle
+        history = history.slice(0, historyIndex + 1);
         history.push(canvas.toDataURL());
         historyIndex++;
     }
 
-    // Undo functionality
     function undo() {
         if (historyIndex > 0) {
             historyIndex--;
             const img = new Image();
             img.src = history[historyIndex];
             img.onload = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas first
-                ctx.drawImage(img, 0, 0);  // Draw the previous state
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
             };
         }
     }
 
-    // Redo functionality
     function redo() {
         if (historyIndex < history.length - 1) {
             historyIndex++;
             const img = new Image();
             img.src = history[historyIndex];
             img.onload = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas first
-                ctx.drawImage(img, 0, 0);  // Draw the next state
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
             };
         }
     }
 
-    // Clear canvas functionality
     function clearCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         history = [];
@@ -226,8 +218,12 @@
     function switchTool(tool) {
         currentTool = tool;
         updateCursor();
+        ctx.lineCap = 'round';      // Ensure rounded ends
+        ctx.lineJoin = 'round';
         if (tool === 'stylus') {
             setStylusSize(7);
+            ctx.strokeStyle = stylusColor;
+            ctx.lineWidth = stylusSize;
         } else if (tool === 'eraser') {
             setEraserSize(7);
         }
@@ -241,7 +237,7 @@
         if (palette.style.display === 'none' || !palette.style.display) {
             const colors = ["#f7c6d7", "#b7d8d6", "#d3e5c5", "#e3b0c7", "#b1d7ed", "#f5d0a9", "#f0a6c1", "#b0b8c1", "#e1d0f1"];
             palette.innerHTML = '';
-            
+
             const whiteSwatch = document.createElement('div');
             whiteSwatch.classList.add('color-swatch', 'white-swatch');
             whiteSwatch.setAttribute('data-color', '#ffffff');
@@ -285,12 +281,9 @@
         const x = (e.clientX || e.touches[0].clientX) - rect.left;
         const y = (e.clientY || e.touches[0].clientY) - rect.top;
 
-        // Only draw if moved a minimum distance
         const dx = x - lastX;
         const dy = y - lastY;
-        if (Math.sqrt(dx * dx + dy * dy) < minDistance) {
-            return; // Skip drawing if distance is too small
-        }
+        if (Math.sqrt(dx * dx + dy * dy) < minDistance) return;
 
         if (drawing) {
             if (currentTool === 'eraser') {
@@ -307,7 +300,6 @@
         lastX = x;
         lastY = y;
 
-        // Call requestAnimationFrame for smooth continuous drawing
         if (drawing) {
             requestAnimationFrame(() => draw(e));
         }
@@ -315,10 +307,9 @@
 
     function stopDrawing() {
         drawing = false;
-        saveHistory(); // Save history after drawing
+        saveHistory();
     }
 
-    // Prevent default behavior for touch events to avoid page scrolling on mobile
     canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         startDrawing(e);
@@ -339,7 +330,6 @@
         stopDrawing();
     });
 
-    // Mouse events
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
@@ -348,12 +338,10 @@
     document.getElementById("undoButton").addEventListener("click", undo);
     document.getElementById("redoButton").addEventListener("click", redo);
 
-    // Show the download options popup
     document.getElementById("downloadButton").addEventListener("click", () => {
         document.getElementById("downloadModal").style.display = 'block';
     });
 
-    // Handle JPG download with white background
     document.getElementById("downloadJPG").addEventListener("click", () => {
         const bgCanvas = document.createElement("canvas");
         const bgCtx = bgCanvas.getContext("2d");
@@ -362,7 +350,6 @@
 
         bgCtx.fillStyle = '#ffffff';
         bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-
         bgCtx.drawImage(canvas, 0, 0);
 
         const dataURL = bgCanvas.toDataURL("image/jpeg", 1.0);
@@ -373,7 +360,6 @@
         document.getElementById("downloadModal").style.display = 'none';
     });
 
-    // Handle PNG download (with transparency)
     document.getElementById("downloadPNG").addEventListener("click", () => {
         const dataURL = canvas.toDataURL("image/png");
         const link = document.createElement("a");
@@ -383,7 +369,6 @@
         document.getElementById("downloadModal").style.display = 'none';
     });
 
-    // Close modal when clicking outside of it
     document.body.addEventListener("click", (e) => {
         const modal = document.getElementById("downloadModal");
         if (!modal.contains(e.target) && e.target !== document.getElementById("downloadButton")) {
